@@ -1,4 +1,4 @@
-defmodule Scrapper.Data.Model.Match.Participant do
+defmodule Scrapper.Data.Api.Model.Match.Participant do
   # Enum.map(participant, fn {k,_v} -> ":#{k}" end) |> Enum.join(", ")
   defstruct [
     :onMyWayPings,

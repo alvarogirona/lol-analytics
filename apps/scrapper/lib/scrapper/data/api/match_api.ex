@@ -1,4 +1,4 @@
-defmodule Scrapper.Data.MatchApi do
+defmodule Scrapper.Data.Api.MatchApi do
   @match_base_endpoint "https://europe.api.riotgames.com/lol/match/v5/matches/%{matchid}"
   @puuid_matches_base_endpoint "https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/%{puuid}/ids"
 
@@ -18,7 +18,7 @@ defmodule Scrapper.Data.MatchApi do
       200 ->
         # process the response here
         response.body
-        Poison.decode!(response.body, as: %Scrapper.Data.Model.Match.MatchResponse{})
+        Poison.decode!(response.body, as: %Scrapper.Data.Api.Model.Match.MatchResponse{})
 
       _ ->
         # handle error responses
