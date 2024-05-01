@@ -2,6 +2,11 @@ defmodule Scrapper.Data.MatchApi do
   @match_base_endpoint "https://europe.api.riotgames.com/lol/match/v5/matches/%{matchid}"
   @puuid_matches_base_endpoint "https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/%{puuid}/ids"
 
+  @doc """
+  Get match by id
+
+  iex> Scrapper.Data.MatchApi.get_match_by_id("EUW1_6921743825")
+  """
   @spec get_match_by_id(String.t()) :: any()
   def get_match_by_id(match_id) do
     url = String.replace(@match_base_endpoint, "%{matchid}", match_id)
@@ -12,7 +17,8 @@ defmodule Scrapper.Data.MatchApi do
     case response.status_code do
       200 ->
         # process the response here
-        IO.inspect(response.body)
+        response.body
+        Poison.decode!(response.body, as: %Scrapper.Data.Model.Match.MatchResponse{})
 
       _ ->
         # handle error responses
