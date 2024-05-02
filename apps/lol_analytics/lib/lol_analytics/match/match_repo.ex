@@ -3,6 +3,11 @@ defmodule LolAnalytics.Match.MatchRepo do
 
   import Ecto.Query
 
+  def list_matches do
+    query = from m in MatchSchema, order_by: [desc: m.match_id]
+    LoLAnalytics.Repo.all(query)
+  end
+
   @spec get_match(String.t()) :: %LolAnalytics.Match.MatchSchema{}
   def get_match(match_id) do
     query = from m in MatchSchema, where: m.match_id == ^match_id

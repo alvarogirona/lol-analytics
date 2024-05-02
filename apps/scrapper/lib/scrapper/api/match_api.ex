@@ -11,6 +11,7 @@ defmodule Scrapper.Data.Api.MatchApi do
   @spec get_match_by_id(String.t()) :: %Scrapper.Api.Model.MatchResponse{}
   def get_match_by_id(match_id) do
     url = String.replace(@match_base_endpoint, "%{matchid}", match_id)
+    Logger.info("Making request to #{url}")
     api_key = System.get_env("RIOT_API_KEY")
     headers = [{"X-Riot-Token", api_key}]
     response = HTTPoison.get!(url, headers, timeout: 5000)
@@ -25,9 +26,15 @@ defmodule Scrapper.Data.Api.MatchApi do
     end
   end
 
+  @doc """
+  Get matches from player
+
+  iex> Scrapper.Data.Api.MatchApi.get_matches_from_player "JB6TdEWlKjZwnbgdSzOogYepNfjLPdUh68S8b4kUu4EEZy4R4MMAgv92QMj1XgVjtzHmZVLaOW7mzg"
+  """
   @spec get_matches_from_player(String.t()) :: list(String.t()) | integer()
   def get_matches_from_player(puuid) do
-    url = String.replace(@puuid_matches_base_endpoint, "%{puuid}", puuid)
+    url = String.replace(@puuid_matches_base_endpoint, "%{puuid}", URI.encode(puuid))
+    Logger.info("Making request to #{url}")
     api_key = System.get_env("RIOT_API_KEY")
     headers = [{"X-Riot-Token", api_key}]
     response = HTTPoison.get!(url, headers, timeout: 5000)
@@ -37,6 +44,7 @@ defmodule Scrapper.Data.Api.MatchApi do
         {:ok, Poison.decode!(response.body)}
 
       code ->
+        IO.inspect(response)
         Logger.error("Error getting matches from player #{puuid} #{code}")
         {:err, response.status_code}
     end

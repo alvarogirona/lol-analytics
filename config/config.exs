@@ -14,6 +14,8 @@ config :lol_analytics,
   namespace: LoLAnalytics,
   ecto_repos: [LoLAnalytics.Repo]
 
+config :lol_analytics, LoLAnalytics.Repo, loggers: [], log: false
+
 config :lol_analytics_web,
   namespace: LoLAnalyticsWeb,
   ecto_repos: [LoLAnalytics.Repo],

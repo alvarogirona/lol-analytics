@@ -14,7 +14,11 @@ defmodule Scrapper.Queue.PlayerQueue do
 
   @spec queue_player(String.t()) :: nil
   def queue_player(puuid) do
-    GenServer.call(__MODULE__, {:queue_player, puuid})
+    case LolAnalytics.Player.PlayerRepo.get_player(puuid) do
+      nil -> GenServer.call(__MODULE__, {:queue_player, puuid})
+      _ -> :already_processed
+    end
+
   end
 
   def handle_call({:queue_player, puuid}, _from, {channel, _} = state) do

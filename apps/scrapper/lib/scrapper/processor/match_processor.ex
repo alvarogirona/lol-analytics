@@ -16,17 +16,17 @@ defmodule Scrapper.Processor.MatchProcessor do
            ],
            on_failure: :reject,
            qos: [
-             prefetch_count: 3
+             prefetch_count: 1
            ]},
         concurrency: 1,
         rate_limiting: [
-          interval: 1000 * 60,
-          allowed_messages: 150
+          interval: 1000 * 3,
+          allowed_messages: 1
         ]
       ],
       processors: [
         default: [
-          concurrency: 5
+          concurrency: 1
         ]
       ]
     )
@@ -45,19 +45,19 @@ defmodule Scrapper.Processor.MatchProcessor do
   def process_resp({:ok, raw_match}, match_id) do
     decoded_match = Poison.decode!(raw_match, as: %Scrapper.Api.Model.MatchResponse{})
     Scrapper.Storage.S3MatchStorage.store_match(match_id, raw_match)
+    match = LolAnalytics.Match.MatchRepo.get_match(match_id)
+
+    case match do
+      nil ->
+        LolAnalytics.Match.MatchRepo.insert_match(match_id)
+
+      _ ->
+        LolAnalytics.Match.MatchRepo.update_match(match, %{:processed => true})
+    end
 
     decoded_match.metadata.participants
     |> Enum.each(fn participant ->
-      case Scrapper.Data.Api.MatchApi.get_matches_from_player(participant) do
-        {:ok, matches} ->
-          matches
-          |> Enum.each(fn match_id ->
-            Scrapper.Queue.MatchQueue.queue_match(match_id)
-          end)
-
-        {:err, code} ->
-          {:err, code}
-      end
+      Scrapper.Queue.PlayerQueue.queue_player(participant)
     end)
   end
 

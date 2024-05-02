@@ -15,7 +15,11 @@ defmodule Scrapper.Queue.MatchQueue do
 
   @spec queue_match(String.t()) :: any()
   def queue_match(match_id) do
-    GenServer.call(__MODULE__, {:queue_match, match_id})
+    LolAnalytics.Match.MatchRepo.get_match(match_id)
+    |> case do
+      nil -> GenServer.call(__MODULE__, {:queue_match, match_id})
+      match -> :already_processed
+    end
   end
 
   def handle_call({:queue_match, match_id}, _from, %{:channel => channel} = state) do
