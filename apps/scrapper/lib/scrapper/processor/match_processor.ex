@@ -1,7 +1,5 @@
-defmodule Scrapper.MatchBroadway do
+defmodule Scrapper.Processor.MatchProcessor do
   use Broadway
-
-  alias Broadway.Message
 
   def start_link(_opts) do
     Broadway.start_link(
@@ -20,11 +18,15 @@ defmodule Scrapper.MatchBroadway do
            qos: [
              prefetch_count: 3
            ]},
-        concurrency: 1
+        concurrency: 1,
+        rate_limiting: [
+          interval: 1000 * 90,
+          allowed_messages: 5
+        ]
       ],
       processors: [
         default: [
-          concurrency: 20
+          concurrency: 5
         ]
       ]
     )
@@ -34,8 +36,19 @@ defmodule Scrapper.MatchBroadway do
   def handle_message(_, message = %Broadway.Message{}, _) do
     match_id = message.data
     IO.inspect(match_id)
+
     match = Scrapper.Data.Api.MatchApi.get_match_by_id(match_id)
-    IO.inspect(match)
-    message.data
+
+    match.metadata.participants
+    |> Enum.each(fn participant ->
+      Scrapper.Data.Api.MatchApi.get_matches_from_player(participant)
+      |> Enum.each(fn match_id ->
+        nil
+        Scrapper.Queue.MatchQueue.queue_match(match_id)
+      end)
+    end)
+
+    IO.inspect(match.info.participants)
+    message
   end
 end
