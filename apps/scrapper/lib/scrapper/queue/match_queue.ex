@@ -18,7 +18,7 @@ defmodule Scrapper.Queue.MatchQueue do
     GenServer.call(__MODULE__, {:queue_match, match_id})
   end
 
-  def handle_call({:queue_match, match_id}, from, %{:channel => channel} = state) do
+  def handle_call({:queue_match, match_id}, _from, %{:channel => channel} = state) do
     AMQP.Basic.publish(channel, "", "match", match_id)
     {:reply, nil, state}
   end

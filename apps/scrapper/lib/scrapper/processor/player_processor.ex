@@ -20,13 +20,13 @@ defmodule Scrapper.Processor.PlayerProcessor do
            ]},
         concurrency: 1,
         rate_limiting: [
-          interval: 1000 * 90,
-          allowed_messages: 2
+          interval: 1000 * 60,
+          allowed_messages: 5
         ]
       ],
       processors: [
         default: [
-          concurrency: 2
+          concurrency: 5
         ]
       ]
     )
@@ -36,13 +36,20 @@ defmodule Scrapper.Processor.PlayerProcessor do
   def handle_message(_, message = %Broadway.Message{}, _) do
     puuid = message.data
 
-    IO.inspect(puuid)
+    resp = Scrapper.Data.Api.MatchApi.get_matches_from_player(puuid)
 
-    Scrapper.Data.Api.MatchApi.get_matches_from_player(puuid)
-    |> Enum.each(fn match_id ->
-      IO.inspect(match_id)
-      Scrapper.Queue.MatchQueue.queue_match(match_id)
-    end)
+    case resp do
+      {:ok, matches} ->
+        {
+          matches
+          |> Enum.each(fn match_id ->
+            Scrapper.Queue.MatchQueue.queue_match(match_id)
+          end)
+        }
+
+      {:err, code} ->
+        {:err, code}
+    end
 
     message
   end

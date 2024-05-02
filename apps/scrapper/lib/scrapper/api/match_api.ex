@@ -1,4 +1,5 @@
 defmodule Scrapper.Data.Api.MatchApi do
+  import Logger
   @match_base_endpoint "https://europe.api.riotgames.com/lol/match/v5/matches/%{matchid}"
   @puuid_matches_base_endpoint "https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/%{puuid}/ids"
 
@@ -7,7 +8,7 @@ defmodule Scrapper.Data.Api.MatchApi do
 
   iex> Scrapper.Data.MatchApi.get_match_by_id("EUW1_6921743825")
   """
-  @spec get_match_by_id(String.t()) :: %Scrapper.Data.Api.Model.Match.MatchResponse{}
+  @spec get_match_by_id(String.t()) :: %Scrapper.Api.Model.MatchResponse{}
   def get_match_by_id(match_id) do
     url = String.replace(@match_base_endpoint, "%{matchid}", match_id)
     api_key = System.get_env("RIOT_API_KEY")
@@ -16,13 +17,11 @@ defmodule Scrapper.Data.Api.MatchApi do
 
     case response.status_code do
       200 ->
-        # process the response here
-        response.body
-        Poison.decode!(response.body, as: %Scrapper.Data.Api.Model.Match.MatchResponse{})
+        {:ok, response.body}
 
       _ ->
-        # handle error responses
-        IO.inspect(response.status_code)
+        Logger.error("Error getting match by id: #{match_id} #{inspect(response)}")
+        {:err, response.status_code}
     end
   end
 
@@ -35,13 +34,11 @@ defmodule Scrapper.Data.Api.MatchApi do
 
     case response.status_code do
       200 ->
-        # process the response here
-        IO.inspect(response.body)
-        Poison.decode!(response.body)
+        {:ok, Poison.decode!(response.body)}
 
-      _ ->
-        # handle error responses
-        IO.inspect(response.status_code)
+      code ->
+        Logger.error("Error getting matches from player #{puuid} #{code}")
+        {:err, response.status_code}
     end
   end
 end

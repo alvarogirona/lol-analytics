@@ -29,11 +29,12 @@ defmodule Scrapper.MixProject do
       {:httpoison, "~> 2.2"},
       {:poison, "~> 5.0"},
       {:ex_aws, "~> 2.1"},
-      {:ex_aws_s3, "~> 2.0"},
+      {:ex_aws_s3, "~> 2.5.3"},
       {:hackney, "~> 1.9"},
       {:sweet_xml, "~> 0.6"},
       {:broadway_rabbitmq, "~> 0.7"},
-      {:amqp, "~> 3.3"}
+      {:amqp, "~> 3.3"},
+      {:sweet_xml, "~> 0.7.3"}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       # {:sibling_app_in_umbrella, in_umbrella: true}

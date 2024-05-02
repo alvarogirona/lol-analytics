@@ -20,8 +20,8 @@ defmodule Scrapper.Processor.MatchProcessor do
            ]},
         concurrency: 1,
         rate_limiting: [
-          interval: 1000 * 90,
-          allowed_messages: 5
+          interval: 1000 * 60,
+          allowed_messages: 150
         ]
       ],
       processors: [
@@ -35,20 +35,32 @@ defmodule Scrapper.Processor.MatchProcessor do
   @impl true
   def handle_message(_, message = %Broadway.Message{}, _) do
     match_id = message.data
-    IO.inspect(match_id)
 
-    match = Scrapper.Data.Api.MatchApi.get_match_by_id(match_id)
+    resp = Scrapper.Data.Api.MatchApi.get_match_by_id(match_id)
+    process_resp(resp, match_id)
 
-    match.metadata.participants
-    |> Enum.each(fn participant ->
-      Scrapper.Data.Api.MatchApi.get_matches_from_player(participant)
-      |> Enum.each(fn match_id ->
-        nil
-        Scrapper.Queue.MatchQueue.queue_match(match_id)
-      end)
-    end)
-
-    IO.inspect(match.info.participants)
     message
+  end
+
+  def process_resp({:ok, raw_match}, match_id) do
+    decoded_match = Poison.decode!(raw_match, as: %Scrapper.Api.Model.MatchResponse{})
+    Scrapper.Storage.S3MatchStorage.store_match(match_id, raw_match)
+
+    decoded_match.metadata.participants
+    |> Enum.each(fn participant ->
+      case Scrapper.Data.Api.MatchApi.get_matches_from_player(participant) do
+        {:ok, matches} ->
+          matches
+          |> Enum.each(fn match_id ->
+            Scrapper.Queue.MatchQueue.queue_match(match_id)
+          end)
+
+        {:err, code} ->
+          {:err, code}
+      end
+    end)
+  end
+
+  def process_resp({:err, code}, match_id) do
   end
 end
