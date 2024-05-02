@@ -12,7 +12,7 @@ defmodule Scrapper.Data.Api.MatchApi do
     url = String.replace(@match_base_endpoint, "%{matchid}", match_id)
     api_key = System.get_env("RIOT_API_KEY")
     headers = [{"X-Riot-Token", api_key}]
-    response = HTTPoison.get!(url, headers, timeout: 5000)
+      response = HTTPoison.get!(url, headers, timeout: 5000)
 
     case response.status_code do
       200 ->

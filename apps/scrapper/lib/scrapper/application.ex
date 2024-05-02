@@ -8,6 +8,8 @@ defmodule Scrapper.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      Scrapper.MatchQueue,
+      {Scrapper.MatchBroadway, []}
       # Starts a worker by calling: Scrapper.Worker.start_link(arg)
       # {Scrapper.Worker, arg}
     ]
