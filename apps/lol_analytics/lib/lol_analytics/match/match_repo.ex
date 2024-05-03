@@ -8,6 +8,11 @@ defmodule LolAnalytics.Match.MatchRepo do
     LoLAnalytics.Repo.all(query)
   end
 
+  def number_of_matches do
+    query = from m in MatchSchema, select: count(m.match_id)
+    LoLAnalytics.Repo.one(query)
+  end
+
   @spec get_match(String.t()) :: %LolAnalytics.Match.MatchSchema{}
   def get_match(match_id) do
     query = from m in MatchSchema, where: m.match_id == ^match_id

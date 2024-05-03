@@ -4,8 +4,13 @@ defmodule LolAnalytics.Player.PlayerRepo do
   import Ecto.Query
 
   def list_players do
-    query = from(p in PlayerSchema)
+    query = from p in PlayerSchema, order_by: [desc: p.id]
     LoLAnalytics.Repo.all(query)
+  end
+
+  def number_of_players do
+    query = from p in PlayerSchema, select: count(p.id)
+    LoLAnalytics.Repo.one(query)
   end
 
   def get_player(puuid) do
