@@ -15,7 +15,7 @@ defmodule Scrapper.Processor.PlayerProcessor do
              password: "guest",
              host: "localhost"
            ],
-           on_failure: :reject,
+           on_failure: :reject_and_requeue,
            qos: [
              prefetch_count: 1
            ]},
@@ -46,7 +46,7 @@ defmodule Scrapper.Processor.PlayerProcessor do
       player ->
         player
         |> LolAnalytics.Player.PlayerRepo.update_player(%{
-          :last_processed_at => DateTime.utc_now() |> DateTime.truncate(:seconds)
+          :last_processed_at => DateTime.utc_now() |> DateTime.truncate(:second)
         })
     end
 

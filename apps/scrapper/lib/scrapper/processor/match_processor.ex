@@ -14,13 +14,13 @@ defmodule Scrapper.Processor.MatchProcessor do
              password: "guest",
              host: "localhost"
            ],
-           on_failure: :reject,
+           on_failure: :reject_and_requeue,
            qos: [
              prefetch_count: 1
            ]},
         concurrency: 1,
         rate_limiting: [
-          interval: 1000 * 3,
+          interval: 1000 * 1,
           allowed_messages: 1
         ]
       ],
