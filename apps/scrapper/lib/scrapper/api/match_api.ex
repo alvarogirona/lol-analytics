@@ -44,7 +44,6 @@ defmodule Scrapper.Data.Api.MatchApi do
         {:ok, Poison.decode!(response.body)}
 
       code ->
-        IO.inspect(response)
         Logger.error("Error getting matches from player #{puuid} #{code}")
         {:err, response.status_code}
     end
