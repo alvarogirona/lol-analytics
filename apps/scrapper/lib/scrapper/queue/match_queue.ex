@@ -6,10 +6,11 @@ defmodule Scrapper.Queue.MatchQueue do
     GenServer.start_link(__MODULE__, {}, name: __MODULE__)
   end
 
-  @spec init({}) :: {:ok, {AMQP.Channel.t(), AMQP.Connection.t()}}
+  @spec init({}) :: {:ok, %{channel: AMQP.Channel.t(), connection: AMQP.Connection.t()}}
   def init({}) do
     {:ok, connection} = AMQP.Connection.open()
     {:ok, channel} = AMQP.Channel.open(connection)
+    AMQP.Queue.declare(channel, "match", durable: true)
     {:ok, %{:channel => channel, :connection => connection}}
   end
 

@@ -9,6 +9,7 @@ defmodule Scrapper.Queue.PlayerQueue do
   def init(_opts) do
     {:ok, connection} = AMQP.Connection.open()
     {:ok, channel} = AMQP.Channel.open(connection)
+    AMQP.Queue.declare(channel, "player", durable: true)
     {:ok, {channel, connection}}
   end
 
@@ -18,7 +19,6 @@ defmodule Scrapper.Queue.PlayerQueue do
       nil -> GenServer.call(__MODULE__, {:queue_player, puuid})
       _ -> :already_processed
     end
-
   end
 
   def handle_call({:queue_player, puuid}, _from, {channel, _} = state) do
