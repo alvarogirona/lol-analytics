@@ -18,5 +18,6 @@ defmodule LolAnalytics.Player.PlayerSchema do
     player
     |> cast(params, [:puuid, :region, :last_processed_at])
     |> validate_required([:puuid, :region, :last_processed_at])
+    |> unique_constraint(:puuid)
   end
 end

@@ -18,9 +18,12 @@ defmodule LolAnalytics.Player.PlayerRepo do
     LoLAnalytics.Repo.one(query)
   end
 
-  def insert_player(puuid) do
+  @spec insert_player(String.t(), keyword()) :: %PlayerSchema{}
+  def insert_player(puuid, attrs \\ %{}) do
+    attrs = Map.merge(%{puuid: puuid, region: "EUW", status: "queued"}, attrs)
+
     %PlayerSchema{}
-    |> PlayerSchema.changeset(%{puuid: puuid, region: "EUW"})
+    |> PlayerSchema.changeset(attrs)
     |> LoLAnalytics.Repo.insert()
   end
 
