@@ -34,23 +34,21 @@ defmodule Scrapper.Processor.PlayerProcessor do
   end
 
   @impl true
+  @spec handle_message(any(), Broadway.Message.t(), any()) :: Broadway.Message.t()
   def handle_message(_, message = %Broadway.Message{}, _) do
     puuid = message.data
 
-    resp = Scrapper.Data.Api.MatchApi.get_matches_from_player(puuid)
-
     case LolAnalytics.Player.PlayerRepo.get_player(puuid) do
       nil ->
-        LolAnalytics.Player.PlayerRepo.insert_player(puuid)
+        :noop
 
       player ->
-        player
-        |> LolAnalytics.Player.PlayerRepo.update_player(%{
-          :last_processed_at => DateTime.utc_now() |> DateTime.truncate(:second)
-        })
+        update_player_processed(player)
     end
 
-    case resp do
+    match_history = Scrapper.Data.Api.MatchApi.get_matches_from_player(puuid)
+
+    case match_history do
       {:ok, matches} ->
         {
           matches
@@ -66,9 +64,7 @@ defmodule Scrapper.Processor.PlayerProcessor do
     message
   end
 
-  defp update_player(nil), do: :player_not_found
-
-  defp update_player(player) do
+  defp update_player_processed(player) do
     LolAnalytics.Player.PlayerRepo.update_player(player, %{
       :last_processed_at => DateTime.utc_now() |> DateTime.truncate(:second)
     })
