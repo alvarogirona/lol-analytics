@@ -5,6 +5,7 @@ defmodule LoLAnalytics.Repo.Migrations.Match do
     create table("match", id: false) do
       add :match_id, :string, primary_key: true
       add :processed, :boolean
+      add :status, :string, default: "queued"
       timestamps()
     end
 

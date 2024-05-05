@@ -6,6 +6,7 @@ defmodule LoLAnalytics.Repo.Migrations.Player do
       add :puuid, :string, primary_key: true
       add :region, :string
       add :last_processed_at, :utc_datetime
+      add :status, :string, default: "queued"
       timestamps()
     end
 
