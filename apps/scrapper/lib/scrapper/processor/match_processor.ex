@@ -59,8 +59,8 @@ defmodule Scrapper.Processor.MatchProcessor do
     end
 
     decoded_match.metadata.participants
-    |> Enum.each(fn participant ->
-      Scrapper.Queue.PlayerQueue.queue_player(participant)
+    |> Enum.each(fn participant_puuid ->
+      Scrapper.Queue.PlayerQueue.queue_puuid(participant_puuid)
     end)
   end
 
