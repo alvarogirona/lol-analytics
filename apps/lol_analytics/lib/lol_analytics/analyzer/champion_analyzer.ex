@@ -3,7 +3,6 @@ defmodule LolAnalytics.Analyzer.ChampionAnalyzer do
   @behaviour LolAnalytics.Analyzer.BaseAnalyzer
 
   @doc """
-  iex> LolAnalytics.Analyzer.ChampionAnalyzer.analyze(:url, "https://na1.api.riotgames.com/lol/match/v4/match/234567890123456789")
   :ok
   """
   @impl true
