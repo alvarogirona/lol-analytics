@@ -16,10 +16,16 @@ defmodule Scrapper.MatchClassifier do
     |> Scrapper.Parallel.peach(fn {match, index} ->
       %{key: json_file} = match
       [key | _] = String.split(json_file, ".")
-      Logger.info("Match at #{index} of #{total_matches} is classified")
       response = HTTPoison.get!("http://localhost:9000/matches/#{key}.json", [], timeout: 5000)
-      %{"info" => %{"gameVersion" => gameVersion}} = Poison.decode!(response.body)
-      Storage.MatchStorage.S3MatchStorage.store_match(key, response.body, "ranked", gameVersion)
+
+      %{"info" => %{"gameVersion" => gameVersion, "queueId" => queueId}} =
+        Poison.decode!(response.body)
+
+      if queueId == 420 do
+        Storage.MatchStorage.S3MatchStorage.store_match(key, response.body, "ranked", gameVersion)
+        Logger.info("Match at #{index} of #{total_matches} is classified")
+      end
+
       match
     end)
   end
