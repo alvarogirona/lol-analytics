@@ -1,4 +1,6 @@
-defmodule Scrapper.Api.AccountApi do
+defmodule LoLAPI.AccountApi do
+  require Logger
+
   @get_puuid_endpoint "https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/%{gameName}/%{tagLine}"
 
   @spec get_puuid(String.t(), String.t()) :: {:ok, String.t()} | {:error, String.t()}

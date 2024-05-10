@@ -15,7 +15,9 @@ defmodule LolAnalytics.Player.PlayerRepo do
 
   def get_player(puuid) do
     query = from p in PlayerSchema, where: p.puuid == ^puuid
-    LoLAnalytics.Repo.one(query)
+
+    LoLAnalytics.Repo.all(query)
+    |> List.first()
   end
 
   @spec insert_player(String.t(), keyword()) :: %PlayerSchema{}

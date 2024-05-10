@@ -1,4 +1,4 @@
-defmodule Scrapper.Api.Model.Participant do
+defmodule LoLAPI.Model.Participant do
   # Enum.map(participant, fn {k,_v} -> ":#{k}" end) |> Enum.join(", ")
   defstruct [
     :onMyWayPings,

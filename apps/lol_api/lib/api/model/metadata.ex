@@ -1,3 +1,3 @@
-defmodule Scrapper.Api.Model.Metadata do
+defmodule LoLAPI.Model.Metadata do
   defstruct [:dataVersion, :matchId, :participants]
 end

@@ -66,3 +66,5 @@ config :phoenix, :json_library, Jason
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
 import_config "../apps/scrapper/config/config.exs"
+import_config "../apps/storage/config/config.exs"
+import_config "../apps/lol_api/config/config.exs"

@@ -1,5 +1,5 @@
-defmodule Scrapper.Api.Model.Info do
-  alias Scrapper.Api.Model.Participant
+defmodule LoLAPI.Model.Info do
+  alias LoLAPI.Model.Participant
 
   defstruct endOfGameResult: "",
             gameCreation: "",

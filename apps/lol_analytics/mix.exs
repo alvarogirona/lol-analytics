@@ -40,7 +40,10 @@ defmodule LoLAnalytics.MixProject do
       {:phoenix_pubsub, "~> 2.1"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
-      {:jason, "~> 1.2"}
+      {:jason, "~> 1.2"},
+      {:lol_api, in_umbrella: true},
+      {:httpoison, "~> 2.2"},
+      {:poison, "~> 5.0"}
     ]
   end
 

@@ -1,14 +1,13 @@
-defmodule Scrapper.Storage.S3MatchStorage do
+defmodule Storage.MatchStorage.S3MatchStorage do
   require Logger
-  import SweetXml
-
-  @behaviour Scrapper.Data.Storage.MatchStorage
+  @behaviour Storage.MatchStorage
 
   def get_match(match_id) do
     ""
   end
 
   # check for to get all pages next_continuation_token
+  @impl true
   def list_matches() do
     {:ok, %{:body => %{:contents => contents, next_continuation_token: next_continuation_token}}} =
       ExAws.S3.list_objects_v2("matches")
@@ -24,7 +23,7 @@ defmodule Scrapper.Storage.S3MatchStorage do
   end
 
   @spec list_matches(list(String.t()), String.t()) :: list(String.t())
-  def list_matches(acc, continuation_token) do
+  defp list_matches(acc, continuation_token) do
     resp =
       {:ok,
        %{:body => %{:contents => contents, next_continuation_token: next_continuation_token}}} =
@@ -38,22 +37,38 @@ defmodule Scrapper.Storage.S3MatchStorage do
     end
   end
 
-  def download_match(destination_path, url) do
-    ExAws.S3.download_file(url, destination_path)
-    |> ExAws.request()
-  end
-
   @doc """
-  iex> Scrapper.Storage.S3MatchStorage.store_match "1", "content"
+  iex> Scrapper.Storage.S3MatchStorage.store_match "1", "content", "matches"
   """
-  @spec store_match(String.t(), String.t()) :: none()
-  def store_match(match_id, match_data) do
+  @impl true
+  @spec store_match(String.t(), String.t(), String.t()) :: none()
+  def store_match(match_id, match_data, bucket) do
     File.write("/tmp/#{match_id}.json", match_data)
 
     url =
       "/tmp/#{match_id}.json"
       |> ExAws.S3.Upload.stream_file()
-      |> ExAws.S3.upload("matches", "#{match_id}.json")
+      |> ExAws.S3.upload(bucket, "#{match_id}.json")
+      |> ExAws.request!()
+      |> extract_s3_url_from_upload
+
+    Logger.info("Stored match at #{url}")
+
+    url
+  end
+
+  @doc """
+  iex> Scrapper.Storage.S3MatchStorage.store_match "1", "content", "ranked" "14.9"
+  """
+  @impl true
+  @spec store_match(String.t(), String.t(), String.t(), String.t()) :: none()
+  def store_match(match_id, match_data, bucket, path) do
+    File.write("/tmp/#{match_id}.json", match_data)
+
+    url =
+      "/tmp/#{match_id}.json"
+      |> ExAws.S3.Upload.stream_file()
+      |> ExAws.S3.upload("#{bucket}/#{path}", "#{match_id}.json")
       |> ExAws.request!()
       |> extract_s3_url_from_upload
 

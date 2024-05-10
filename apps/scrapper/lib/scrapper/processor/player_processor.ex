@@ -46,7 +46,7 @@ defmodule Scrapper.Processor.PlayerProcessor do
         update_player_processed(player)
     end
 
-    match_history = Scrapper.Data.Api.MatchApi.get_matches_from_player(puuid)
+    match_history = LoLAPI.MatchApi.get_matches_from_player(puuid)
 
     case match_history do
       {:ok, matches} ->

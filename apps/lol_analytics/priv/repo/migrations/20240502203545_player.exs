@@ -10,6 +10,7 @@ defmodule LoLAnalytics.Repo.Migrations.Player do
       timestamps()
     end
 
+    unique_index("player", :puuid)
     create index(:player, [:puuid])
   end
 end

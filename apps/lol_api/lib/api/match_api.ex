@@ -1,14 +1,14 @@
-defmodule Scrapper.Data.Api.MatchApi do
-  import Logger
+defmodule LoLAPI.MatchApi do
+  require Logger
   @match_base_endpoint "https://europe.api.riotgames.com/lol/match/v5/matches/%{matchid}"
   @puuid_matches_base_endpoint "https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/%{puuid}/ids"
 
   @doc """
   Get match by id
 
-  iex> Scrapper.Data.MatchApi.get_match_by_id("EUW1_6921743825")
+  iex> LoLAPI.MatchApi.get_match_by_id("EUW1_6921743825")
   """
-  @spec get_match_by_id(String.t()) :: %Scrapper.Api.Model.MatchResponse{}
+  @spec get_match_by_id(String.t()) :: %LoLAPI.Model.MatchResponse{}
   def get_match_by_id(match_id) do
     url = String.replace(@match_base_endpoint, "%{matchid}", match_id)
     Logger.info("Making request to #{url}")
@@ -29,7 +29,7 @@ defmodule Scrapper.Data.Api.MatchApi do
   @doc """
   Get matches from player
 
-  iex> Scrapper.Data.Api.MatchApi.get_matches_from_player "JB6TdEWlKjZwnbgdSzOogYepNfjLPdUh68S8b4kUu4EEZy4R4MMAgv92QMj1XgVjtzHmZVLaOW7mzg"
+  iex> LoLAPI.MatchApi.get_matches_from_player "JB6TdEWlKjZwnbgdSzOogYepNfjLPdUh68S8b4kUu4EEZy4R4MMAgv92QMj1XgVjtzHmZVLaOW7mzg"
   """
   @spec get_matches_from_player(String.t()) :: list(String.t()) | integer()
   def get_matches_from_player(puuid) do
