@@ -44,7 +44,7 @@ defmodule Scrapper.Processor.MatchProcessor do
 
   def process_resp({:ok, raw_match}, match_id) do
     decoded_match = Poison.decode!(raw_match, as: %LoLAPI.Model.MatchResponse{})
-    match_url = Storage.MatchStorage.S3MatchStorage.store_match(match_id, raw_match)
+    match_url = Storage.MatchStorage.S3MatchStorage.store_match(match_id, raw_match, "matches")
     match = LolAnalytics.Match.MatchRepo.get_match(match_id)
 
     case match do
