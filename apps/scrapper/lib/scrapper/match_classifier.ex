@@ -16,7 +16,7 @@ defmodule Scrapper.MatchClassifier do
     |> Scrapper.Parallel.peach(fn {match, index} ->
       %{key: json_file} = match
       [key | _] = String.split(json_file, ".")
-      response = HTTPoison.get!("http://localhost:9000/matches/#{key}.json", [], timeout: 5000)
+      response = HTTPoison.get!("http://#{System.get_env("EX_AWS_ENDPOINT")}:9000/matches/#{key}.json", [], timeout: 5000)
 
       %{"info" => %{"gameVersion" => gameVersion, "queueId" => queueId}} =
         Poison.decode!(response.body)
