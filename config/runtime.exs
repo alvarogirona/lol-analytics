@@ -38,7 +38,6 @@ if config_env() == :prod do
 
   config :lol_analytics_web, LoLAnalyticsWeb.Endpoint,
     http: [
-      server: true,
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
