@@ -8,7 +8,7 @@ defmodule Scrapper.MatchClassifier do
 
   @spec classify_match_by_queue(String.t()) :: nil
   def classify_match_by_queue("420") do
-    matches = Storage.MatchStorage.S3MatchStorage.list_matches()
+    matches = Storage.MatchStorage.S3MatchStorage.list_files("matches")
     total_matches = Enum.count(matches)
 
     matches
@@ -16,7 +16,11 @@ defmodule Scrapper.MatchClassifier do
     |> Scrapper.Parallel.peach(fn {match, index} ->
       %{key: json_file} = match
       [key | _] = String.split(json_file, ".")
-      response = HTTPoison.get!("http://#{System.get_env("EX_AWS_ENDPOINT")}:9000/matches/#{key}.json", [], timeout: 5000)
+
+      response =
+        HTTPoison.get!("http://#{System.get_env("EX_AWS_ENDPOINT")}:9000/matches/#{key}.json", [],
+          timeout: 5000
+        )
 
       %{"info" => %{"gameVersion" => gameVersion, "queueId" => queueId}} =
         Poison.decode!(response.body)
