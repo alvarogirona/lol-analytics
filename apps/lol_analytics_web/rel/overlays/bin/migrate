@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+
+cd -P -- "$(dirname -- "$0")"
+exec ./lol_analytics_web eval LoLAnalyticsWeb.Release.migrate

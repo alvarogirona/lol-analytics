@@ -34,8 +34,6 @@ defmodule Scrapper.MatchClassifier do
     end)
   end
 
-  # pass functions, not data
-
   def classify_match_by_queue(_) do
   end
 end
