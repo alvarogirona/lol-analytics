@@ -35,4 +35,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: alvaro/lol-analytics:latest
+          tags: git.kaizer.cloud/alvaro/lol-analytics:latest
