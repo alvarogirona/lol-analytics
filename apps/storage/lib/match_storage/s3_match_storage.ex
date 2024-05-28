@@ -6,6 +6,11 @@ defmodule Storage.MatchStorage.S3MatchStorage do
     ""
   end
 
+  def stream_files(path) do
+    ExAws.S3.list_objects_v2(path)
+    |> ExAws.stream!()
+  end
+
   @doc """
   Lists all files at the given path.
 
