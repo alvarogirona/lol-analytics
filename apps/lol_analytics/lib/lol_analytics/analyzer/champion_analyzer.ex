@@ -13,8 +13,8 @@ defmodule LolAnalytics.Analyzer.ChampionAnalyzer do
   @doc """
   iex> LolAnalytics.Analyzer.ChampionAnalyzer.analyze(:url, "http://localhost:9000/ranked/14.9.580.2108/EUW1_6923309745.json")
   """
+  @spec analyze(any(), any()) :: none()
   @impl true
-  @spec analyze(atom(), String.t()) :: :ok
   def analyze(:url, path) do
     data = HTTPoison.get!(path)
     analyze(:data, data.body)
@@ -22,7 +22,6 @@ defmodule LolAnalytics.Analyzer.ChampionAnalyzer do
   end
 
   @impl true
-  @spec analyze(atom(), any()) :: list(LoLAPI.Model.Participant.t())
   def analyze(:data, data) do
     decoded_match = Poison.decode!(data, as: %LoLAPI.Model.MatchResponse{})
     participants = decoded_match.info.participants
