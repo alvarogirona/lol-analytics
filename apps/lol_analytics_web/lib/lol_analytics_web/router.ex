@@ -18,6 +18,12 @@ defmodule LoLAnalyticsWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    live "/champions", ChampionLive.Index, :index
+    live "/champions/new", ChampionLive.Index, :new
+    live "/champions/:id/edit", ChampionLive.Index, :edit
+
+    live "/champions/:id", ChampionLive.Show, :show
+    live "/champions/:id/show/edit", ChampionLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

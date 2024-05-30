@@ -1,0 +1,66 @@
+<.header>
+  Listing Champions
+</.header>
+
+<h1>Champions</h1>
+<.form for={@form} phx-change="filter" phx-submit="save">
+  <.input type="text" field={@form["name"]} />
+  <.input type="checkbox" field={@form["all_roles"]} />
+  <div class="flex flex-col justify-between">
+    <div class="flex flex-row gap-2">
+      <.input type="checkbox" field={@form["top_role"]} />
+      <p>Top</p>
+    </div>
+    <div class="flex flex-row">
+      <.input type="checkbox" field={@form["middle_role"]} />
+      <p>Middle</p>
+    </div>
+    <div class="flex flex-row">
+      <.input type="checkbox" field={@form["jungle_role"]} />
+      <p>Jungle</p>
+    </div>
+    <div class="flex flex-row">
+      <.input type="checkbox" field={@form["bottom_role"]} />
+      <p>Bottom</p>
+    </div>
+    <div class="flex flex-row">
+      <.input type="checkbox" field={@form["utility_role"]} />
+      <p>Utility</p>
+    </div>
+  </div>
+
+  <button>Save</button>
+</.form>
+
+<div id="champions" class="grid grid-cols-4 gap-4">
+  <%= for {_, champion} <- @streams.champions do %>
+    <div class="flex flex-col">
+      <img src={"https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/#{champion.image}"} />
+      <div class="flex-auto flex-col">
+        <p><%= champion.name %></p>
+        <p><%= champion.id %></p>
+        <p><%= champion.win_rate %>%</p>
+      </div>
+    </div>
+
+    <div class="sr-only">
+      <.link navigate={~p"/champions/#{champion}"}>Show</.link>
+    </div>
+  <% end %>
+</div>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="champion-modal"
+  show
+  on_cancel={JS.patch(~p"/champions")}
+>
+  <.live_component
+    module={LoLAnalyticsWeb.ChampionLive.FormComponent}
+    id={@champion.champion_id || :new}
+    title={@page_title}
+    action={@live_action}
+    champion={@champion}
+    patch={~p"/champions"}
+  />
+</.modal>

@@ -18,6 +18,13 @@ defmodule LolAnalytics.Dimensions.Champion.ChampionRepo do
     end
   end
 
+  def update(champion_id, attrs) do
+    get_or_create(champion_id)
+    |> ChampionSchema.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @spec list_champions() :: any()
   def list_champions() do
     Repo.all(ChampionSchema)
   end
