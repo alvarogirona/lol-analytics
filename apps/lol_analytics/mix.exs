@@ -42,6 +42,7 @@ defmodule LoLAnalytics.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.2"},
       {:lol_api, in_umbrella: true},
+      {:storage, in_umbrella: true},
       {:httpoison, "~> 2.2"},
       {:poison, "~> 5.0"}
     ]
