@@ -6,7 +6,6 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.ChampionPlayedGameRepo do
   alias LolAnalytics.Dimensions.Champion.ChampionRepo
   alias LolAnalytics.Dimensions.Match.MatchRepo
   alias LolAnalytics.Facts.ChampionPlayedGame.ChampionPlayedGameSchema
-  alias LolAnalytics.Facts.ChampionPlayedGame
   alias LoLAnalytics.Repo
 
   def insert(attrs) do
@@ -21,13 +20,13 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.ChampionPlayedGameRepo do
     Repo.all(ChampionPlayedGameSchema)
   end
 
-  def get_win_rates2 do
-    query2 =
+  def get_win_rates do
+    query =
       from m in ChampionPlayedGameSchema,
         join: c in ChampionSchema,
         on: c.champion_id == m.champion_id,
         select: %{
-          wins: count(m.is_win),
+          wins: fragment("count(CASE WHEN ? THEN 1 END)", m.is_win),
           win_rate:
             fragment(
               "
@@ -37,41 +36,13 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.ChampionPlayedGameRepo do
             ),
           id: m.champion_id,
           name: c.name,
-          image: c.image
+          image: c.image,
+          team_position: m.team_position,
+          total_games: count("*")
         },
-        group_by: [m.champion_id, c.image, c.name]
+        group_by: [m.champion_id, c.image, c.name, m.team_position]
 
-    Repo.all(query2)
-  end
-
-  def get_win_rates() do
-    query = """
-    SELECT
-      (cast(count(CASE WHEN is_win THEN 1 END) as float) / cast(count(*) as float)) * 100.0 as win_rate,
-      count(CASE WHEN is_win THEN 1 END) as games_won,
-      count(*) as total_games,
-      champion_id
-      FROM fact_champion_played_game
-
-      GROUP BY champion_id
-      ORDER BY win_rate desc;
-    """
-
-    case Ecto.Adapters.SQL.query(Repo, query, []) do
-      {:ok, %Postgrex.Result{rows: rows}} ->
-        rows
-        |> Enum.map(fn [win_rate, wins, games, champion_id] ->
-          %{
-            win_rate: win_rate,
-            wins: wins,
-            games: games,
-            champion_id: champion_id
-          }
-        end)
-
-      {:error, _exception} ->
-        :error
-    end
+    Repo.all(query)
   end
 
   def get_win_rates_by_roles() do

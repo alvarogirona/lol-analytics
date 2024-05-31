@@ -4,42 +4,30 @@
 
 <h1>Champions</h1>
 <.form for={@form} phx-change="filter" phx-submit="save">
-  <.input type="text" field={@form["name"]} />
-  <.input type="checkbox" field={@form["all_roles"]} />
-  <div class="flex flex-col justify-between">
-    <div class="flex flex-row gap-2">
-      <.input type="checkbox" field={@form["top_role"]} />
-      <p>Top</p>
-    </div>
-    <div class="flex flex-row">
-      <.input type="checkbox" field={@form["middle_role"]} />
-      <p>Middle</p>
-    </div>
-    <div class="flex flex-row">
-      <.input type="checkbox" field={@form["jungle_role"]} />
-      <p>Jungle</p>
-    </div>
-    <div class="flex flex-row">
-      <.input type="checkbox" field={@form["bottom_role"]} />
-      <p>Bottom</p>
-    </div>
-    <div class="flex flex-row">
-      <.input type="checkbox" field={@form["utility_role"]} />
-      <p>Utility</p>
+  <div class="flex flex-col gap-2">
+    <.input type="text" field={@form["name"]} />
+    <div class="flex flex-row justify-between">
+      <%= for role <- @roles do %>
+        <div class="flex flex-row gap-2 align-middle">
+          <.input type="checkbox" field={@form[role.value]} />
+          <p><%= role.title %></p>
+        </div>
+      <% end %>
     </div>
   </div>
 
-  <button>Save</button>
+  <%!-- <button>Save</button> --%>
 </.form>
 
 <div id="champions" class="grid grid-cols-4 gap-4">
   <%= for {_, champion} <- @streams.champions do %>
-    <div class="flex flex-col">
+    <div class="flex flex-col max-w-sm bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
       <img src={"https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/#{champion.image}"} />
-      <div class="flex-auto flex-col">
+      <div class="flex-auto flex-col p-4 ">
         <p><%= champion.name %></p>
-        <p><%= champion.id %></p>
+        <p><%= champion.wins %> / <%= champion.total_games %></p>
         <p><%= champion.win_rate %>%</p>
+        <p><%= champion.team_position %></p>
       </div>
     </div>
 
