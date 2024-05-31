@@ -5,7 +5,6 @@ defmodule LolAnalytics.Analyzer.ChampionAnalyzer do
   def analyze_all_matches do
     Storage.MatchStorage.S3MatchStorage.stream_files("ranked")
     |> Enum.each(fn %{key: path} ->
-      IO.inspect(path)
       LolAnalytics.Analyzer.ChampionAnalyzer.analyze(:url, "http://192.168.1.55:9000/ranked/#{path}")
     end)
 

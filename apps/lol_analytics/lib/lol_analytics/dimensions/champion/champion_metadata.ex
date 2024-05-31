@@ -39,6 +39,5 @@ defmodule LolAnalytics.Dimensions.Champion.ChampionMetadata do
     ChampionRepo.update(champion_id, attrs)
 
     info
-    |> IO.inspect()
   end
 end

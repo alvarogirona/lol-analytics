@@ -57,8 +57,6 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
       "UTILITY" => utility
     } = params
 
-    IO.inspect(params)
-
     filter =
       if all == "true" do
         nil
@@ -73,9 +71,6 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
         |> Enum.filter(fn {_k, v} -> v end)
         |> Enum.map(fn {k, _v} -> k end)
       end
-
-    IO.puts(">>>>> 3")
-    IO.inspect(filter)
 
     champs =
       LolAnalytics.Facts.ChampionPlayedGame.ChampionPlayedGameRepo.get_win_rates()
