@@ -26,11 +26,22 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
     _champion = ChampionRepo.get_or_create(attrs.champion_id)
     _player = PlayerRepo.get_or_create(attrs.puuid)
     _spell = SummonerSpellRepo.get_or_create(attrs.summoner_spell_id)
-    changeset = Schema.changeset(%Schema{}, attrs)
+
+    prev =
+      from(f in Schema,
+        where:
+          f.match_id == ^attrs.match_id and
+            f.champion_id == ^attrs.champion_id and
+            f.summoner_spell_id ==
+              ^attrs.summoner_spell_id
+      )
+      |> Repo.one!()
+
+    changeset = Schema.changeset(prev, attrs)
 
     IO.inspect(attrs)
 
-    Repo.insert(changeset)
+    Repo.insert_or_update(changeset)
     |> IO.inspect()
   end
 
