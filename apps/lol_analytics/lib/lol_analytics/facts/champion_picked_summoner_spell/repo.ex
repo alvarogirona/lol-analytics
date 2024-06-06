@@ -1,6 +1,7 @@
 defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
   import Ecto.Query
 
+  alias LolAnalytics.Dimensions.SummonerSpell.SummonerSpellSchema
   alias LolAnalytics.Dimensions.SummonerSpell.SummonerSpellRepo
   alias LolAnalytics.Dimensions.Champion.ChampionSchema
 
@@ -13,11 +14,11 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
   alias LoLAnalytics.Repo
 
   @type insert_attrs :: %{
-    match_id: String.t(),
-    champion_id: String.t(),
-    puuid: String.t(),
-    summoner_spell_id: :integer
-  }
+          match_id: String.t(),
+          champion_id: String.t(),
+          puuid: String.t(),
+          summoner_spell_id: :integer
+        }
 
   @spec insert(insert_attrs()) :: any()
   def insert(attrs) do
@@ -33,11 +34,17 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
     |> IO.inspect()
   end
 
+  @spec get_champion_spells_by_win_rate(String.t()) :: list()
+  def get_champion_spells_by_win_rate(championId) do
+  end
+
   def get_champion_picked_summoners() do
     query =
       from f in Schema,
         join: c in ChampionSchema,
         on: c.champion_id == f.champion_id,
+        join: s in SummonerSpellSchema,
+        on: s.spell_id == f.summoner_spell_id,
         select: %{
           wins: fragment("count(CASE WHEN ? THEN 1 END)", f.is_win),
           win_rate:
@@ -48,13 +55,23 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
               f.is_win
             ),
           id: f.champion_id,
-          spell_id: f.spell_id,
-          name: c.name,
+          spell_id: f.summoner_spell_id,
+          metadata: s.metadata,
+          champion_name: c.name,
+          champion_id: c.champion_id,
           image: c.image,
           team_position: f.team_position,
           total_games: count("*")
         },
-        group_by: [f.champion_id, f.spell_id, c.image, c.name, f.team_position]
+        group_by: [
+          f.champion_id,
+          f.summoner_spell_id,
+          s.metadata,
+          c.image,
+          c.name,
+          c.champion_id,
+          f.team_position
+        ]
 
     Repo.all(query)
   end
