@@ -1,9 +1,6 @@
 defmodule LoLAnalyticsWeb.RoleLive.Index do
   use LoLAnalyticsWeb, :live_view
 
-  alias LoLAnalytics.Accounts
-  alias LoLAnalytics.Accounts.Role
-
   @roles ["ALL", "TOP", "MIDDLE", "JUNGLE", "UTILITY", "BOTTOM"]
 
   @impl true

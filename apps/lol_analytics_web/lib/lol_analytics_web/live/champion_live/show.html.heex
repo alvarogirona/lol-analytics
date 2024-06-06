@@ -1,25 +1,7 @@
 <.header>
   Champion <%= @champion.id %>
   <:subtitle>This is a champion record from your database.</:subtitle>
-  <:actions>
-    <.link patch={~p"/champions/#{@champion}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit champion</.button>
-    </.link>
-  </:actions>
+  <:actions></:actions>
 </.header>
 
-<.list>
-</.list>
-
 <.back navigate={~p"/champions"}>Back to champions</.back>
-
-<.modal :if={@live_action == :edit} id="champion-modal" show on_cancel={JS.patch(~p"/champions/#{@champion}")}>
-  <.live_component
-    module={LoLAnalyticsWeb.ChampionLive.FormComponent}
-    id={@champion.id}
-    title={@page_title}
-    action={@live_action}
-    champion={@champion}
-    patch={~p"/champions/#{@champion}"}
-  />
-</.modal>

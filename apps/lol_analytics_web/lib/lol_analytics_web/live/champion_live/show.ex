@@ -1,8 +1,6 @@
 defmodule LoLAnalyticsWeb.ChampionLive.Show do
   use LoLAnalyticsWeb, :live_view
 
-  alias LoLAnalytics.Accounts
-
   @impl true
   def mount(_params, _session, socket) do
     {:ok, socket}
@@ -13,7 +11,7 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:champion, Accounts.get_champion!(id))}
+     |> assign(:champion, %{id: id})}
   end
 
   defp page_title(:show), do: "Show Champion"

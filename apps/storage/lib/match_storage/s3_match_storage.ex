@@ -2,48 +2,14 @@ defmodule Storage.MatchStorage.S3MatchStorage do
   require Logger
   @behaviour Storage.MatchStorage
 
-  def get_match(match_id) do
-    ""
+  @impl true
+  def get_match(_match_id) do
   end
 
+  @impl true
   def stream_files(path) do
     ExAws.S3.list_objects_v2(path)
     |> ExAws.stream!()
-  end
-
-  @doc """
-  Lists all files at the given path.
-
-  iex > Storage.MatchStorage.S3MatchStorage.list_files("matches")
-  """
-  @impl true
-  def list_files(path) do
-    {:ok, %{:body => %{:contents => contents, next_continuation_token: next_continuation_token}}} =
-      ExAws.S3.list_objects_v2(path)
-      |> ExAws.request()
-
-    if next_continuation_token do
-      list_files(path, contents, next_continuation_token)
-      # |> Enum.map(fn %{key: key} -> key end)
-    else
-      contents
-      # |> Enum.map(fn %{key: key} -> key end)
-    end
-  end
-
-  @spec list_files(String.t(), list(String.t()), String.t()) :: list(String.t())
-  defp list_files(path, acc, continuation_token) do
-    resp =
-      {:ok,
-       %{:body => %{:contents => contents, next_continuation_token: next_continuation_token}}} =
-      ExAws.S3.list_objects_v2(path, continuation_token: continuation_token)
-      |> ExAws.request()
-
-    if next_continuation_token == "" do
-      acc ++ contents
-    else
-      list_files(path, acc ++ contents, next_continuation_token)
-    end
   end
 
   @doc """

@@ -13,7 +13,7 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    champs = LolAnalytics.Facts.ChampionPlayedGame.ChampionPlayedGameRepo.get_win_rates()
+    champs = LolAnalytics.Facts.ChampionPlayedGame.Repo.get_win_rates()
 
     mapped =
       champs
@@ -73,7 +73,7 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
       end
 
     champs =
-      LolAnalytics.Facts.ChampionPlayedGame.ChampionPlayedGameRepo.get_win_rates()
+      LolAnalytics.Facts.ChampionPlayedGame.Repo.get_win_rates()
       |> Enum.filter(fn %{name: name} ->
         String.downcase(name) |> String.contains?(query_name)
       end)
@@ -93,10 +93,6 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
      )}
   end
 
-  def handle_event("filter", unsigned_params, socket) do
-    {:noreply, socket}
-  end
-
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
@@ -107,10 +103,5 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
     |> assign(:page_title, "Listing Champions")
 
     # |> assign(:champion, nil)
-  end
-
-  @impl true
-  def handle_info({LoLAnalyticsWeb.ChampionLive.FormComponent, {:saved, champion}}, socket) do
-    {:noreply, stream_insert(socket, :champions, champion)}
   end
 end

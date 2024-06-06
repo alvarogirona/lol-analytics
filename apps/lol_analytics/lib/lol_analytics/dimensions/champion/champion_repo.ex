@@ -1,6 +1,4 @@
 defmodule LolAnalytics.Dimensions.Champion.ChampionRepo do
-  import Ecto.Query
-
   alias LoLAnalytics.Repo
   alias LolAnalytics.Dimensions.Champion.ChampionSchema
 

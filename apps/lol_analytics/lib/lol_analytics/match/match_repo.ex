@@ -13,7 +13,7 @@ defmodule LolAnalytics.Match.MatchRepo do
     LoLAnalytics.Repo.one(query)
   end
 
-  @spec get_match(String.t()) :: %LolAnalytics.Match.MatchSchema{}
+  @spec get_match(String.t()) :: %LolAnalytics.Match.MatchSchema{} | nil
   def get_match(match_id) do
     query = from m in MatchSchema, where: m.match_id == ^match_id
 

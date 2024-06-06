@@ -19,7 +19,7 @@ defmodule Scrapper.Queue.MatchQueue do
     LolAnalytics.Match.MatchRepo.get_match(match_id)
     |> case do
       nil -> GenServer.call(__MODULE__, {:queue_match, match_id})
-      match -> :already_processed
+      _match -> :already_processed
     end
   end
 

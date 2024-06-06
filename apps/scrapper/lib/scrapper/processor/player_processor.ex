@@ -1,5 +1,4 @@
 defmodule Scrapper.Processor.PlayerProcessor do
-  alias Calendar.ISO
   use Broadway
 
   def start_link(_opts) do

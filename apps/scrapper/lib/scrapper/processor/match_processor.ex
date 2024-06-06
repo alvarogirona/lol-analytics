@@ -66,6 +66,6 @@ defmodule Scrapper.Processor.MatchProcessor do
     end)
   end
 
-  def process_resp({:err, code}, match_id) do
+  def process_resp({:err, _code}, _match_id) do
   end
 end

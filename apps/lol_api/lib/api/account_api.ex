@@ -18,7 +18,7 @@ defmodule LoLAPI.AccountApi do
       200 ->
         {:ok, Poison.decode(response.body)}
 
-      code ->
+      _code ->
         Logger.error("Error getting puuid from player #{name} \##{tag}")
         {:err, response.status_code}
     end

@@ -46,7 +46,7 @@ defmodule LolAnalytics.ChampionWinRate.ChampionWinRateRepo do
     Repo.all(ChampionWinRateSchema)
   end
 
-  def get_champion_win_rate(champion_id, patch) do
+  def get_champion_win_rate(champion_id, _patch) do
     champion_query =
       from cwr in LolAnalytics.ChampionWinRate.ChampionWinRateSchema,
         where: cwr.champion_id == ^champion_id

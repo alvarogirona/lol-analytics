@@ -2,8 +2,6 @@ defmodule LolAnalytics.Dimensions.Champion.ChampionMetadata do
   alias LolAnalytics.Dimensions.Champion.ChampionRepo
   @champions_data_url "https://ddragon.leagueoflegends.com/cdn/14.11.1/data/en_US/champion.json"
 
-  use GenServer
-
   def update_metadata() do
     {:ok, %{"data" => data}} = get_champions()
 
@@ -20,7 +18,7 @@ defmodule LolAnalytics.Dimensions.Champion.ChampionMetadata do
     end
   end
 
-  defp save_metadata({champion, info}) do
+  defp save_metadata({_champion, info}) do
     %{
       "image" => %{
         "full" => full_image
