@@ -18,12 +18,10 @@ defmodule LolAnalytics.Analyzer.ChampionAnalyzer do
   @doc """
   iex> LolAnalytics.Analyzer.ChampionAnalyzer.analyze(:url, "http://localhost:9000/ranked/14.9.580.2108/EUW1_6923309745.json")
   """
-  @spec analyze(any(), any()) :: none()
   @impl true
   def analyze(:url, path) do
     data = HTTPoison.get!(path)
     analyze(:data, data.body)
-    :ok
   end
 
   @impl true

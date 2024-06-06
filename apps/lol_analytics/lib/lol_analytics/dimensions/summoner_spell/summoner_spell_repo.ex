@@ -1,9 +1,12 @@
 defmodule LolAnalytics.Dimensions.SummonerSpell.SummonerSpellRepo do
+  import Ecto.Query
+
   alias LolAnalytics.Dimensions.SummonerSpell.SummonerSpellSchema
   alias LoLAnalytics.Repo
 
   def get_or_create(spell_id) do
-    spell = Repo.get(SummonerSpellSchema, spell_id: spell_id)
+    query = from s in SummonerSpellSchema, where: s.spell_id == ^spell_id
+    spell = Repo.one(query)
 
     case spell do
       nil ->
