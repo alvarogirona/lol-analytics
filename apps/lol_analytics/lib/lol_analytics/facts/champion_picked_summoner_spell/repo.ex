@@ -35,9 +35,9 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
             f.summoner_spell_id ==
               ^attrs.summoner_spell_id
       )
-      |> Repo.one!()
+      |> Repo.one()
 
-    changeset = Schema.changeset(prev, attrs)
+    changeset = Schema.changeset(prev || %Schema{}, attrs)
 
     IO.inspect(attrs)
 
