@@ -1,7 +1,10 @@
 defmodule LoLAnalyticsWeb.ChampionLive.Show do
   use LoLAnalyticsWeb, :live_view
 
-  import LolAnalyticsWeb.ChampionComponents.SummonerSpells
+  import LolAnalyticsWeb.ChampionComponents.SummonerSpell
+  import LolAnalyticsWeb.ChampionComponents.ChampionAvatar
+
+  alias LolAnalyticsWeb.ChampionComponents.SummonerSpells.ShowMapper
 
   @impl true
   def mount(_params, _session, socket) do
@@ -13,23 +16,22 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:champion, %{id: id})
-     |> assign(:summoner_spells, %{summoner_spells: load_summoner_spells()})}
+     |> assign(:champion, load_champion_info(id) |> ShowMapper.map_champion())
+     |> assign(:summoner_spells, %{
+       summoner_spells: load_summoner_spells(id) |> ShowMapper.map_spells()
+     })}
   end
 
-  defp load_summoner_spells() do
-    %LolAnalyticsWeb.ChampionComponents.SummonerSpells.Props{
-      spell1: %LolAnalyticsWeb.ChampionComponents.SummonerSpells.SummonerSpell{
-        id: 1,
-        win_rate: 51.7,
-        total_games: 400
-      },
-      spell2: %LolAnalyticsWeb.ChampionComponents.SummonerSpells.SummonerSpell{
-        id: 2,
-        win_rate: 51.7,
-        total_games: 500
-      }
-    }
+  defp load_summoner_spells(champion_id) do
+    LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo.get_champion_picked_summoners(champion_id)
+  end
+
+  defp load_champion_info(champion_id) do
+    champion = LolAnalytics.Dimensions.Champion.ChampionRepo.get_or_create(champion_id)
+
+    IO.inspect(champion)
+
+    champion
   end
 
   defp page_title(:show), do: "Show Champion"

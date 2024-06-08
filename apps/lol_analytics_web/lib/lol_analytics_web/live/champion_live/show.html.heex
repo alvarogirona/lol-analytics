@@ -1,8 +1,12 @@
 <.header>
   Champion <%= @champion.id %>
-  <:subtitle>This is a champion record from your database.</:subtitle>
-  <:actions></:actions>
+    <:actions></:actions>
 </.header>
+
+<.champion_avatar id={@champion.id} name={@champion.name}
+  image={"https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/#{@champion.image}"} />
+
+<div class="my-4" />
 
 <.summoner_spells spells={@summoner_spells} />
 

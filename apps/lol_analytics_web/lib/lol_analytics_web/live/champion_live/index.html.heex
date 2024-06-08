@@ -1,54 +1,20 @@
 <.header>
-  Listing Champions
+  Champions
 </.header>
 
-<h1>Champions</h1>
-<.form for={@form} phx-change="filter" phx-submit="save">
-  <div class="flex flex-col gap-2">
-    <.input type="text" field={@form["name"]} />
-    <div class="flex flex-row justify-between">
-      <%= for role <- @roles do %>
-        <div class="flex flex-row gap-2 align-middle">
-          <.input type="checkbox" field={@form[role.value]} />
-          <p><%= role.title %></p>
-        </div>
-      <% end %>
-    </div>
-  </div>
+<h1>Filters</h1>
 
-  <%!-- <button>Save</button> --%>
-</.form>
+
+<.live_component module={ChampionFilters} id="role-filters" selectedrole={@selected_role} />
+
 
 <div id="champions" class="grid grid-cols-4 gap-4">
   <%= for {_, champion} <- @streams.champions do %>
-    <div class="flex flex-col max-w-sm bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-      <img src={"https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/#{champion.image}"} />
-      <div class="flex-auto flex-col p-4 ">
-        <p><%= champion.name %></p>
-        <p><%= champion.wins %> / <%= champion.total_games %></p>
-        <p><%= champion.win_rate %>%</p>
-        <p><%= champion.team_position %></p>
-      </div>
-    </div>
-
-    <div class="sr-only">
-      <.link navigate={~p"/champions/#{champion}"}>Show</.link>
-    </div>
-  <% end %>
+    <.champion_card props={champion} />
+    <% end %>
 </div>
 
-<.modal
-  :if={@live_action in [:new, :edit]}
-  id="champion-modal"
-  show
-  on_cancel={JS.patch(~p"/champions")}
->
-  <.live_component
-    module={LoLAnalyticsWeb.ChampionLive.FormComponent}
-    id={@champion.champion_id || :new}
-    title={@page_title}
-    action={@live_action}
-    champion={@champion}
-    patch={~p"/champions"}
-  />
+<.modal :if={@live_action in [:new, :edit]} id="champion-modal" show on_cancel={JS.patch(~p"/champions")}>
+  <.live_component module={LoLAnalyticsWeb.ChampionLive.FormComponent} id={@champion.champion_id || :new}
+    title={@page_title} action={@live_action} champion={@champion} patch={~p"/champions"} />
 </.modal>

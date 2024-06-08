@@ -45,13 +45,10 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
     |> IO.inspect()
   end
 
-  @spec get_champion_spells_by_win_rate(String.t()) :: list()
-  def get_champion_spells_by_win_rate(championId) do
-  end
-
-  def get_champion_picked_summoners() do
+  def get_champion_picked_summoners(championId, team_position \\ "MIDDLE") do
     query =
       from f in Schema,
+        where: f.champion_id == ^championId and f.team_position == ^team_position,
         join: c in ChampionSchema,
         on: c.champion_id == f.champion_id,
         join: s in SummonerSpellSchema,
@@ -70,7 +67,6 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
           metadata: s.metadata,
           champion_name: c.name,
           champion_id: c.champion_id,
-          image: c.image,
           team_position: f.team_position,
           total_games: count("*")
         },

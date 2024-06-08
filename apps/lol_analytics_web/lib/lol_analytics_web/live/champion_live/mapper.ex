@@ -5,7 +5,7 @@ defmodule LolAnalyticsWeb.ChampionLive.Mapper do
     champs
     |> Enum.map(fn champ ->
       %{
-        Kernel.struct!(%ChampionSummary{}, champ)
+        champ
         | win_rate: :erlang.float_to_binary(champ.win_rate, decimals: 2)
       }
     end)

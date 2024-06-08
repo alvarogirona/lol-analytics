@@ -1,6 +1,12 @@
 defmodule LoLAnalyticsWeb.ChampionLive.Index do
-  alias LolAnalyticsWeb.ChampionLive.Mapper
   use LoLAnalyticsWeb, :live_view
+
+  import LolAnalyticsWeb.ChampionComponents.ChampionCard
+
+  alias LolAnalyticsWeb.ChampionLive.Mapper
+  alias LolAnalyticsWeb.ChampionLive.Components.ChampionFilters
+
+  @behaviour LolAnalyticsWeb.ChampionFilters.EventHandler
 
   @roles [
     %{title: "All", value: "all"},
@@ -20,77 +26,41 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
       |> Mapper.map_champs()
       |> Enum.sort(&(&1.win_rate >= &2.win_rate))
 
-    roles =
-      @roles
-      |> Enum.reduce(%{}, fn role, acc ->
-        Map.merge(acc, %{"#{role.value}" => false})
-      end)
-      |> Map.merge(%{"all" => true})
-
-    form =
-      Map.merge(
-        %{"name" => ""},
-        roles
-      )
-
     socket =
       socket
-      |> stream(
-        :champions,
-        mapped
-      )
-      |> assign(:form, to_form(form))
-      |> assign(:roles, @roles)
+      |> stream(:champions, mapped)
+      |> assign(:selected_role, "all")
 
     {:ok, socket}
   end
 
   @impl true
-  def handle_event("filter", params, socket) do
-    %{
-      "name" => query_name,
-      "all" => all,
-      "TOP" => top,
-      "JUNGLE" => jungle,
-      "MIDDLE" => mid,
-      "BOTTOM" => bot,
-      "UTILITY" => utility
-    } = params
-
-    filter =
-      if all == "true" do
-        nil
-      else
-        %{
-          "TOP" => top == "true",
-          "JUNGLE" => jungle == "true",
-          "MIDDLE" => mid == "true",
-          "BOTTOM" => bot == "true",
-          "UTILITY" => utility == "true"
-        }
-        |> Enum.filter(fn {_k, v} -> v end)
-        |> Enum.map(fn {k, _v} -> k end)
-      end
-
+  def handle_event("filter", %{"role" => selected_role} = params, socket) do
     champs =
       LolAnalytics.Facts.ChampionPlayedGame.Repo.get_win_rates()
-      |> Enum.filter(fn %{name: name} ->
-        String.downcase(name) |> String.contains?(query_name)
-      end)
-      |> Enum.filter(fn champ ->
-        if filter != nil do
-          Enum.any?(filter, fn f -> f == champ.team_position end)
-        end
-      end)
-      |> Mapper.map_champs()
-      |> Enum.sort(&(&1.win_rate >= &2.win_rate))
+      |> filter_champs(selected_role)
 
     {:noreply,
-     stream(
-       socket,
-       :champions,
-       champs
-     )}
+     socket
+     |> stream(:champions, champs)
+     |> assign(:selected_role, selected_role)}
+  end
+
+  def handle_event("filter_champs", params, socket) do
+  end
+
+  defp filter_champs(champs, selected_role) do
+    champs =
+      LolAnalytics.Facts.ChampionPlayedGame.Repo.get_win_rates()
+      |> Enum.filter((&filter_role/1).(selected_role))
+      |> Mapper.map_champs()
+      |> Enum.sort(&(&1.win_rate >= &2.win_rate))
+  end
+
+  defp filter_role(role) do
+    fn champ ->
+      champ.team_position == role || role == "all"
+    end
   end
 
   @impl true
@@ -101,7 +71,5 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Champions")
-
-    # |> assign(:champion, nil)
   end
 end
