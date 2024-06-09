@@ -67,7 +67,7 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
 
       %{status: :data, data: champions} ->
         ~H"""
-        <div id="champions" class="grid grid-cols-4 gap-4">
+        <div id="champions" class="grid grid-cols-2 sm:grid-cols-4  gap-4">
           <%= for champion <- champions do %>
             <.champion_card props={champion} />
           <% end %>

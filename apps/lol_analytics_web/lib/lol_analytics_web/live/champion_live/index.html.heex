@@ -2,15 +2,15 @@
   Champions
 </.header>
 
-<h1>Filters</h1>
+<div class="px-2">
+  <h1 class="text-l font-semibold">Filters</h1>
 
+  <div class="flex flex-col py-2 gap-2">
+    <p>Roles</p>
+    <.live_component module={ChampionFilters} id="role-filters" selectedrole={@selected_role} />
+  </div>
 
-<.live_component module={ChampionFilters} id="role-filters" selectedrole={@selected_role} />
+  <div class="h-4"></div>
 
-<.render_champions champions={@champions} />
-
-
-<.modal :if={@live_action in [:new, :edit]} id="champion-modal" show on_cancel={JS.patch(~p"/champions")}>
-  <.live_component module={LoLAnalyticsWeb.ChampionLive.FormComponent} id={@champion.champion_id || :new}
-    title={@page_title} action={@live_action} champion={@champion} patch={~p"/champions"} />
-</.modal>
+  <.render_champions champions={@champions} />
+</div>

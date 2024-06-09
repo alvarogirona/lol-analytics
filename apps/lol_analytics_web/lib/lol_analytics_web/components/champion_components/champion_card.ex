@@ -13,15 +13,12 @@ defmodule LolAnalyticsWeb.ChampionComponents.ChampionCard do
     ~H"""
     <.link patch={"/champions/#{@props.id}"}>
       <div class="flex flex-col rounded-xl bg-clip-border overflow-hidden bg-gray-200">
-        <div class="flex flex-column overflow-hidden">
-          <div class=" px-4 py-1 opacity-80 gap-2 absolute z-10 align-bottom flex mx-auto bg-black w-max">
+        <div class="flex flex-col flex-col-reverse">
+          <div class="flex w-auto px-4 py-1 opacity-80 gap-2 absolute z-10 align-bottom bg-black">
             <img src={team_position_image(@props.team_position)} class="w-5 h-5" />
             <h3 class="text-white"><%= @props.name %></h3>
           </div>
-          <img
-            class="static w-40 h-40"
-            src={"https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/#{@props.image}"}
-          />
+          <img src={"https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/#{@props.image}"} />
         </div>
         <div class="py-1" />
         <div class="pl-2">
