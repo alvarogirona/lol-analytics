@@ -14,12 +14,13 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
   def mount(params, _session, socket) do
     role =
       case params["role"] do
+        nil -> "all"
         role -> role
-        _ -> "all"
       end
 
     socket =
       socket
+      |> assign(:selected_role, role)
       |> assign(:champions, %{status: :loading})
       |> load_champs(role)
 

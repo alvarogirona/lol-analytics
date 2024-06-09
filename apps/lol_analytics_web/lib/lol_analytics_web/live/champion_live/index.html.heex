@@ -7,7 +7,7 @@
 
   <div class="flex flex-col py-2 gap-2">
     <p>Roles</p>
-    <.live_component module={ChampionFilters} id="role-filters" selectedrole={@selected_role} />
+    <.live_component module={ChampionFilters} id="role-filters" selectedrole={@selected_role || "all" } />
   </div>
 
   <div class="h-4"></div>
