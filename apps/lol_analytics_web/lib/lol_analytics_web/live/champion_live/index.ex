@@ -11,22 +11,26 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
   @behaviour LolAnalyticsWeb.ChampionFilters.EventHandler
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
+    role =
+      case params["role"] do
+        role -> role
+        _ -> "all"
+      end
+
     socket =
       socket
       |> assign(:champions, %{status: :loading})
-      |> load_champs("all")
-      |> assign(:selected_role, "all")
+      |> load_champs(role)
 
     {:ok, socket}
   end
 
   def handle_params(params, _uri, socket) do
-    socket =
-      case params["role"] do
-        role -> {:noreply, assign(socket, selected_role: role)}
-        _ -> {:noreply, socket}
-      end
+    case params["role"] do
+      role -> {:noreply, assign(socket, selected_role: role)}
+      _ -> {:noreply, socket}
+    end
   end
 
   @impl true
@@ -50,8 +54,8 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
     )
   end
 
-  def handle_async(:get_champs, {:ok, fetched_events} = params, socket) do
-    {:noreply, assign(socket, :champions, %{status: :data, data: fetched_events})}
+  def handle_async(:get_champs, {:ok, champs}, socket) do
+    {:noreply, assign(socket, :champions, %{status: :data, data: champs})}
   end
 
   def render_champions(assigns) do
