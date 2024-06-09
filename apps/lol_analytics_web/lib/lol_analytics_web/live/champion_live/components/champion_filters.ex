@@ -30,7 +30,7 @@ defmodule LolAnalyticsWeb.ChampionLive.Components.ChampionFilters do
 
     ~H"""
     <div>
-      <div class="flex flex-row overflow-x-auto justify-between">
+      <div class="flex flex-row overflow-x-scroll sm:overflow-x-auto justify-between">
         <%= for role <- @roles do %>
           <%= if (assigns.selectedrole == role.value) do %>
             <div phx-click="filter" phx-value-role={role.title} class={selected_class}>
