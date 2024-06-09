@@ -17,7 +17,7 @@ defmodule LoLAnalyticsWeb.Router do
   scope "/", LoLAnalyticsWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", ChampionLive.Index, :index
     live "/champions", ChampionLive.Index, :index
     live "/champions/new", ChampionLive.Index, :new
     live "/champions/:id/edit", ChampionLive.Index, :edit
