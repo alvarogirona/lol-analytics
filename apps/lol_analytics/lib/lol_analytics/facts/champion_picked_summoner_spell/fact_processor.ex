@@ -1,5 +1,7 @@
 defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.FactProcessor do
-alias LolAnalytics.Facts.ChampionPickedSummonerSpell
+  require Logger
+
+  alias LolAnalytics.Facts.ChampionPickedSummonerSpell
 
   def process_game_at_url(url) do
     data = HTTPoison.get!(url)
@@ -11,10 +13,11 @@ alias LolAnalytics.Facts.ChampionPickedSummonerSpell
     participants = decoded_match.info.participants
     version = extract_game_version(decoded_match)
 
+    Logger.info("Processing ChampionPickedSummoner for match #{decoded_match.metadata.matchId}")
+
     participants
     |> Enum.each(fn participant = %LoLAPI.Model.Participant{} ->
       if participant.teamPosition != "" do
-
         attrs_spell_1 = %{
           champion_id: participant.championId,
           match_id: decoded_match.metadata.matchId,
@@ -26,6 +29,7 @@ alias LolAnalytics.Facts.ChampionPickedSummonerSpell
           team_position: participant.teamPosition,
           patch_number: version
         }
+
         attrs_spell_2 = %{
           champion_id: participant.championId,
           match_id: decoded_match.metadata.matchId,
@@ -37,6 +41,7 @@ alias LolAnalytics.Facts.ChampionPickedSummonerSpell
           team_position: participant.teamPosition,
           patch_number: version
         }
+
         ChampionPickedSummonerSpell.Repo.insert(attrs_spell_1)
         ChampionPickedSummonerSpell.Repo.insert(attrs_spell_2)
       end

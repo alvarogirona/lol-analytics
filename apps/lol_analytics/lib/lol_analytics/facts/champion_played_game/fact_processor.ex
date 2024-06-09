@@ -1,4 +1,6 @@
 defmodule LolAnalytics.Facts.ChampionPlayedGame.FactProcessor do
+  require Logger
+
   def process_game_at_url(path) do
     data = HTTPoison.get!(path)
     process_game_data(data.body)
@@ -8,6 +10,8 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.FactProcessor do
     decoded_match = Poison.decode!(data, as: %LoLAPI.Model.MatchResponse{})
     participants = decoded_match.info.participants
     version = extract_game_version(decoded_match)
+
+    Logger.info("Processing ChampionPlayedMatch for #{decoded_match.metadata.matchId}")
 
     participants
     |> Enum.each(fn participant = %LoLAPI.Model.Participant{} ->

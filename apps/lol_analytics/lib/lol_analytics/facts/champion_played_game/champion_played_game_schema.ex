@@ -6,6 +6,7 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Schema do
   @casting_attrs [
     :champion_id,
     :match_id,
+    :patch_number,
     :is_win,
     :game_length_seconds,
     :team_position,
@@ -16,6 +17,7 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Schema do
   schema "fact_champion_played_game" do
     field :champion_id, :integer
     field :match_id, :string
+    field :patch_number, :string
     field :is_win, :boolean
     field :game_length_seconds, :integer
     field :team_position, :string

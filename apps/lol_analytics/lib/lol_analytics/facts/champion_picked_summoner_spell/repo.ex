@@ -39,10 +39,7 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
 
     changeset = Schema.changeset(prev || %Schema{}, attrs)
 
-    IO.inspect(attrs)
-
     Repo.insert_or_update(changeset)
-    |> IO.inspect()
   end
 
   def get_champion_picked_summoners(championId, team_position \\ "MIDDLE") do

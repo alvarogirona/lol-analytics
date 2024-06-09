@@ -2,10 +2,12 @@ defmodule LolAnalytics.Dimensions.Patch.PatchRepo do
   alias LolAnalytics.Dimensions.Patch.PatchSchema
   alias LoLAnalytics.Repo
 
-  def get_or_create(patch_number) do
-    patch = Repo.get(PatchSchema, patch_number: patch_number)
+  import Ecto.Query
 
-    case patch do
+  def get_or_create(patch_number) do
+    query = from p in PatchSchema, where: p.patch_number == ^patch_number
+
+    case Repo.one(query) do
       nil ->
         patch_changeset =
           PatchSchema.changeset(

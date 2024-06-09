@@ -3,7 +3,7 @@ defmodule LolAnalytics.Facts.FactsRunner do
 
   def analyze_all_matches do
     Storage.MatchStorage.S3MatchStorage.stream_files("ranked")
-    |> Enum.each(fn %{key: path} ->
+    |> peach(fn %{key: path} ->
       get_facts()
       |> Enum.each(fn fact_runner ->
         apply(fact_runner, ["http://192.168.1.55:9000/ranked/#{path}"])
@@ -16,7 +16,14 @@ defmodule LolAnalytics.Facts.FactsRunner do
 
   def get_facts() do
     [
-      &Facts.ChampionPickedSummonerSpell.FactProcessor.process_game_at_url/1
+      &Facts.ChampionPickedSummonerSpell.FactProcessor.process_game_at_url/1,
+      &Facts.ChampionPlayedGame.FactProcessor.process_game_at_url/1
     ]
+  end
+
+  def peach(enum, fun, concurrency \\ 10, timeout \\ :infinity) do
+    Task.async_stream(enum, &fun.(&1), max_concurrency: concurrency, timeout: timeout)
+    |> Stream.each(fn {:ok, val} -> val end)
+    |> Enum.to_list()
   end
 end
