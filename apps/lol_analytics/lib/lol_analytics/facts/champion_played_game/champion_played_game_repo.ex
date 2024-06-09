@@ -40,7 +40,8 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
           team_position: m.team_position,
           total_games: count("*")
         },
-        group_by: [m.champion_id, c.image, c.name, m.team_position]
+        group_by: [m.champion_id, c.image, c.name, m.team_position],
+        having: count("*") > 100
 
     Repo.all(query)
   end
