@@ -21,7 +21,7 @@ defmodule LolAnalytics.Facts.FactsRunner do
     ]
   end
 
-  def peach(enum, fun, concurrency \\ 20, timeout \\ :infinity) do
+  def peach(enum, fun, concurrency \\ System.schedulers_online() * 2, timeout \\ :infinity) do
     Task.async_stream(enum, &fun.(&1), max_concurrency: concurrency, timeout: timeout)
     |> Stream.each(fn {:ok, val} -> val end)
     |> Enum.to_list()
