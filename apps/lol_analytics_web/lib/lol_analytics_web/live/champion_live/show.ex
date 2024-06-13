@@ -1,7 +1,7 @@
 defmodule LoLAnalyticsWeb.ChampionLive.Show do
   use LoLAnalyticsWeb, :live_view
 
-  import LolAnalyticsWeb.ChampionComponents.SummonerSpell
+  import LolAnalyticsWeb.ChampionComponents.SummonerSpells
   import LolAnalyticsWeb.ChampionComponents.ChampionAvatar
 
   alias LolAnalyticsWeb.ChampionComponents.SummonerSpells.ShowMapper
@@ -24,6 +24,10 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
 
   defp load_summoner_spells(champion_id) do
     LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo.get_champion_picked_summoners(champion_id)
+  end
+
+  defp load_items(champion_id) do
+    LolAnalytics.Facts.ChampionPickedItem.Repo.get_champion_picked_items(champion_id)
   end
 
   defp load_champion_info(champion_id) do
