@@ -1,0 +1,2 @@
+defmodule LolAnalytics.Facts.ChhampionPickedItem.FactProcessor do
+end
