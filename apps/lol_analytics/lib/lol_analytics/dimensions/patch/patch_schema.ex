@@ -11,5 +11,6 @@ defmodule LolAnalytics.Dimensions.Patch.PatchSchema do
     patch
     |> cast(attrs, [:patch_number])
     |> validate_required([:patch_number])
+    |> unique_constraint([:patch_number])
   end
 end

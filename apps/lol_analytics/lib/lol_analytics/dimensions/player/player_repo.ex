@@ -6,15 +6,15 @@ defmodule LolAnalytics.Dimensions.Player.PlayerRepo do
 
   def get_or_create(puuid) do
     query = from p in PlayerSchema, where: p.puuid == ^puuid
-    player = Repo.one(query)
 
-    case player do
+    case Repo.one(query) do
       nil ->
         player_changeset =
           PlayerSchema.changeset(
             %PlayerSchema{},
             %{puuid: puuid}
           )
+
         Repo.insert(player_changeset)
 
       player ->

@@ -5,9 +5,17 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.FactProcessor do
 
   @impl true
   @spec process_game_at_url(String.t()) :: none()
-  def process_game_at_url(path) do
-    data = HTTPoison.get!(path)
-    process_game_data(data.body)
+  def process_game_at_url(url) do
+    case HTTPoison.get(url) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        process_game_data(body)
+
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        {:error, reason}
+
+      _ ->
+        {:error, "Could not fetch data from #{url}"}
+    end
   end
 
   def process_game_data(data) do

@@ -14,7 +14,6 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
     _champion = ChampionRepo.get_or_create(attrs.champion_id)
     _player = PlayerRepo.get_or_create(attrs.puuid)
     _patch = PatchRepo.get_or_create(attrs.patch_number)
-    changeset = Schema.changeset(%Schema{}, attrs)
 
     prev =
       from(f in Schema,
