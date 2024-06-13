@@ -1,8 +1,12 @@
 defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.FactProcessor do
+  @behaviour LolAnalytics.Facts.FactBehaviour
+
   require Logger
 
   alias LolAnalytics.Facts.ChampionPickedSummonerSpell
 
+  @impl true
+  @spec process_game_at_url(String.t()) :: any()
   def process_game_at_url(url) do
     data = HTTPoison.get!(url)
     process_game_data(data.body)

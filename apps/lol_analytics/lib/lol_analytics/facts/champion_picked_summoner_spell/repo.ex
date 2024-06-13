@@ -37,15 +37,14 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
       )
       |> Repo.one()
 
-    changeset = Schema.changeset(prev || %Schema{}, attrs)
-
-    Repo.insert_or_update(changeset)
+    Schema.changeset(prev || %Schema{}, attrs)
+    |> Repo.insert_or_update()
   end
 
-  def get_champion_picked_summoners(championId, team_position \\ "MIDDLE") do
+  def get_champion_picked_summoners(champion_id, team_position \\ "MIDDLE") do
     query =
       from f in Schema,
-        where: f.champion_id == ^championId and f.team_position == ^team_position,
+        where: f.champion_id == ^champion_id and f.team_position == ^team_position,
         join: c in ChampionSchema,
         on: c.champion_id == f.champion_id,
         join: s in SummonerSpellSchema,
@@ -59,10 +58,8 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
               )",
               f.is_win
             ),
-          id: f.champion_id,
           spell_id: f.summoner_spell_id,
           metadata: s.metadata,
-          champion_name: c.name,
           champion_id: c.champion_id,
           team_position: f.team_position,
           total_games: count("*")
@@ -71,8 +68,6 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
           f.champion_id,
           f.summoner_spell_id,
           s.metadata,
-          c.image,
-          c.name,
           c.champion_id,
           f.team_position
         ]

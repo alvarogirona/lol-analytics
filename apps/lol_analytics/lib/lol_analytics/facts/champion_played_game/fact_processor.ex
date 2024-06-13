@@ -1,6 +1,10 @@
 defmodule LolAnalytics.Facts.ChampionPlayedGame.FactProcessor do
   require Logger
 
+  @behaviour LolAnalytics.Facts.FactBehaviour
+
+  @impl true
+  @spec process_game_at_url(String.t()) :: none()
   def process_game_at_url(path) do
     data = HTTPoison.get!(path)
     process_game_data(data.body)
