@@ -29,6 +29,22 @@ defmodule LolAnalyticsWeb.ChampionComponents.SummonerSpells.ShowMapper do
     }
   end
 
+  def map_items(items) do
+    items
+    |> Enum.map(&map_item/1)
+    |> Enum.sort(&(&1.total_games > &2.total_games))
+  end
+
   def map_item(item) do
+    image = item.metadata["image"]["full"]
+
+    %{
+      id: item["id"],
+      win_rate: :erlang.float_to_binary(item.win_rate, decimals: 2),
+      total_games: item.total_games,
+      image: "https://ddragon.leagueoflegends.com/cdn/14.11.1/img/item/#{image}",
+      name: item.metadata["name"],
+      wins: item.wins
+    }
   end
 end

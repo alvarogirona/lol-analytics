@@ -10,7 +10,7 @@ defmodule LolAnalytics.Dimensions.Item.ItemRepo do
     case Repo.one(query) do
       nil ->
         item_changeset = ItemSchema.changeset(%ItemSchema{}, %{item_id: item_id})
-        Repo.insert(item_changeset)
+        Repo.insert!(item_changeset)
 
       item ->
         item
@@ -19,5 +19,12 @@ defmodule LolAnalytics.Dimensions.Item.ItemRepo do
 
   def list_items() do
     Repo.all(ItemSchema)
+  end
+
+  @spec update(item_id :: String.t(), attrs :: map()) :: any()
+  def update(item_id, attrs) do
+    get_or_create(item_id)
+    |> ItemSchema.changeset(attrs)
+    |> Repo.update()
   end
 end

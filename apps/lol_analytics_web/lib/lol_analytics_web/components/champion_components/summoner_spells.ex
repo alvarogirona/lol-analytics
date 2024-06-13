@@ -6,11 +6,13 @@ defmodule LolAnalyticsWeb.ChampionComponents.SummonerSpells do
     ~H"""
     <div class="flex flex-wrap flex-wrap gap-4">
       <%= for spell <- assigns.spells.summoner_spells do %>
-        <div clas="flex flex-col gap-1">
-          <img src={spell.image} />
-          <p><%= spell.name %></p>
-          <p><%= spell.win_rate %>%</p>
-          <p><%= spell.wins %>/<%= spell.total_games %></p>
+        <div class="has-tooltip">
+          <div clas="flex flex-col gap-1">
+            <img src={spell.image} />
+            <p><%= spell.win_rate %>%</p>
+            <p><%= spell.wins %>/<%= spell.total_games %></p>
+          </div>
+          <div class="tooltip -my-8 px-4 py-2 rounded-xl"><%= spell.name %></div>
         </div>
       <% end %>
     </div>

@@ -2,14 +2,17 @@ defmodule LolAnalytics.Dimensions.Item.ItemSchema do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @args [:item_id, :metadata]
+
   schema "dim_item" do
     field :item_id, :integer
+    field :metadata, :map
     timestamps()
   end
 
   def changeset(item = %__MODULE__{}, attrs \\ %{}) do
     item
-    |> cast(attrs, [:item_id])
-    |> validate_required([:item_id])
+    |> cast(attrs, @args)
+    |> validate_required(@args)
   end
 end

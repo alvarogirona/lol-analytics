@@ -71,12 +71,14 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.Repo do
               )",
               f.is_win
             ),
+          metadata: i.metadata,
           item_id: i.item_id,
           champion_id: c.champion_id,
           team_position: f.team_position,
           total_games: count("*")
         },
         group_by: [
+          i.metadata,
           i.item_id,
           c.champion_id,
           f.team_position

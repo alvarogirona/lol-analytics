@@ -11,5 +11,6 @@ defmodule LolAnalytics.Dimensions.Player.PlayerSchema do
     player
     |> cast(attrs, [:puuid])
     |> validate_required([:puuid])
+    |> unique_constraint([:puuid])
   end
 end

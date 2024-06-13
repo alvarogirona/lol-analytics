@@ -3,3 +3,14 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+.tooltip {
+    visibility: hidden;
+    position: absolute;
+}
+
+.has-tooltip:hover .tooltip {
+    visibility: visible;
+    z-index: 100;
+    background-color:lightsteelblue;
+}

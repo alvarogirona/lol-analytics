@@ -9,7 +9,6 @@ defmodule LolAnalyticsWeb.ChampionComponents.ChampionAvatar do
     ~H"""
     <div class="flex flex-col w-40">
       <img src={@image} alt="champion-icon" />
-      <p class="w-full text-center"><%= @name %></p>
     </div>
     """
   end
