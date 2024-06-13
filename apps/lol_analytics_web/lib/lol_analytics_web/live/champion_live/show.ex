@@ -19,13 +19,16 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:champion, load_champion_info(id) |> ShowMapper.map_champion())
      |> assign(:summoner_spells, %{
-       summoner_spells: load_summoner_spells(id) |> ShowMapper.map_spells()
+       summoner_spells: load_summoner_spells(id, team_position) |> ShowMapper.map_spells()
      })
      |> assign(:items, load_items(id, team_position) |> ShowMapper.map_items())}
   end
 
-  defp load_summoner_spells(champion_id) do
-    LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo.get_champion_picked_summoners(champion_id)
+  defp load_summoner_spells(champion_id, team_position) do
+    LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo.get_champion_picked_summoners(
+      champion_id,
+      team_position
+    )
   end
 
   defp load_items(champion_id, team_position) do
