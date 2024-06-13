@@ -1,4 +1,4 @@
-defmodule LolAnalytics.Facts.ChhampionPickedItem.Schema do
+defmodule LolAnalytics.Facts.ChampionPickedItem.Schema do
   use Ecto.Schema
   import Ecto.Changeset
 

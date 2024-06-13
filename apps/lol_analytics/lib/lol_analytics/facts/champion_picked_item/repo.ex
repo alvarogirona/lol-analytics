@@ -3,7 +3,7 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.Repo do
 
   alias LolAnalytics.Dimensions.Item.ItemSchema
   alias LolAnalytics.Dimensions.Champion.ChampionSchema
-  alias LolAnalytics.Facts.ChhampionPickedItem.Schema
+  alias LolAnalytics.Facts.ChampionPickedItem.Schema
   alias LolAnalytics.Dimensions.Item.ItemRepo
   alias LolAnalytics.Dimensions.Player.PlayerRepo
   alias LolAnalytics.Dimensions.Champion.ChampionRepo

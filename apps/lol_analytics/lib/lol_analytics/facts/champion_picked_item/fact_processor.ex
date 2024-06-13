@@ -1,2 +1,2 @@
-defmodule LolAnalytics.Facts.ChhampionPickedItem.FactProcessor do
+defmodule LolAnalytics.Facts.ChampionPickedItem.FactProcessor do
 end
