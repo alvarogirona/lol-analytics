@@ -48,7 +48,7 @@ defmodule Scrapper.Processor.MatchProcessor do
     match_url =
       case decoded_match.info.queueId do
         420 ->
-          Storage.MatchStorage.S3MatchStorage.store_match(match_id, raw_match, "ranked")
+          Storage.MatchStorage.S3MatchStorage.store_match(match_id, raw_match, "ranked", decoded_match.info.gameVersion)
 
         queue_id ->
           Storage.MatchStorage.S3MatchStorage.store_match(match_id, raw_match, queue_id)
