@@ -12,7 +12,9 @@ defmodule LolAnalyticsWeb.ChampionComponents.SummonerSpells do
             <p><%= spell.win_rate %>%</p>
             <p><%= spell.wins %>/<%= spell.total_games %></p>
           </div>
-          <div class="tooltip -my-8 px-4 py-2 rounded-xl"><%= spell.name %></div>
+          <div class="tooltip -my-8 px-4 py-2 rounded-xl">
+            <p><%= spell.name %></p>
+          </div>
         </div>
       <% end %>
     </div>
