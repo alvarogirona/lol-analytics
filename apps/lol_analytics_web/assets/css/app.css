@@ -12,5 +12,7 @@
 .has-tooltip:hover .tooltip {
     visibility: visible;
     z-index: 100;
-    background-color:lightsteelblue;
+    border: 1px solid #333;
+    background-color: whitesmoke;
+    border-radius: 12px;
 }
