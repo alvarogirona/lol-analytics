@@ -1,7 +1,7 @@
 defmodule LoLAPI.MatchApi do
   require Logger
   @match_base_endpoint "https://europe.api.riotgames.com/lol/match/v5/matches/%{matchid}"
-  @puuid_matches_base_endpoint "https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/%{puuid}/ids"
+  @puuid_matches_base_endpoint "https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/%{puuid}/ids?queue=420"
 
   @doc """
   Get match by id

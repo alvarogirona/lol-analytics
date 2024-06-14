@@ -58,7 +58,7 @@ defmodule Scrapper.Processor.MatchProcessor do
             "#{decoded_match.info.gameVersion}"
           )
 
-        queue_id ->
+        _queue_id ->
           Storage.MatchStorage.S3MatchStorage.store_match(match_id, raw_match, "matches")
       end
 
