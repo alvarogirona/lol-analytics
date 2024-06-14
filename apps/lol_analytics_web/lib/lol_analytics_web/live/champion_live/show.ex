@@ -21,7 +21,7 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
      |> assign(:summoner_spells, %{
        summoner_spells: load_summoner_spells(id, team_position) |> ShowMapper.map_spells()
      })
-     |> assign(:items, load_items(id, team_position) |> ShowMapper.map_items())}
+     |> load_items(id, team_position)}
   end
 
   defp load_summoner_spells(champion_id, team_position) do
@@ -31,11 +31,19 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
     )
   end
 
-  defp load_items(champion_id, team_position) do
-    LolAnalytics.Facts.ChampionPickedItem.Repo.get_champion_picked_items(
-      champion_id,
-      team_position
-    )
+  defp load_items(socket, champion_id, team_position) do
+    items =
+      LolAnalytics.Facts.ChampionPickedItem.Repo.get_champion_picked_items(
+        champion_id,
+        team_position
+      )
+
+    all_items_mapped = items |> ShowMapper.map_items() |> Enum.take(30)
+    boots = items |> ShowMapper.extract_boots()
+
+    socket
+    |> assign(:items, all_items_mapped)
+    |> assign(:boots, boots)
   end
 
   defp load_champion_info(champion_id) do

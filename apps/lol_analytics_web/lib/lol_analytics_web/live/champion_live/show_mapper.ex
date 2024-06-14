@@ -47,4 +47,14 @@ defmodule LolAnalyticsWeb.ChampionComponents.SummonerSpells.ShowMapper do
       wins: item.wins
     }
   end
+
+  def extract_boots(items) do
+    items
+    |> Enum.filter(fn item ->
+      tags = item.metadata["tags"]
+      tags |> Enum.any?(&String.equivalent?(&1, "Boots"))
+    end)
+    |> Enum.map(&map_item/1)
+    |> Enum.sort(&(&1.total_games > &2.total_games))
+  end
 end
