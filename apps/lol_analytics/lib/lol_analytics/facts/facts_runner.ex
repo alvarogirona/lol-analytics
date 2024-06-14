@@ -6,7 +6,6 @@ defmodule LolAnalytics.Facts.FactsRunner do
     |> peach(fn %{key: path} ->
       get_facts()
       |> Enum.each(fn fact_runner ->
-        IO.inspect(path)
         apply(fact_runner, ["http://192.168.1.55:9000/ranked/#{path}"])
       end)
     end)
