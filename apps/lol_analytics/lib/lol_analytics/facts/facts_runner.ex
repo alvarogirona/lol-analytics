@@ -26,8 +26,8 @@ defmodule LolAnalytics.Facts.FactsRunner do
 
   def get_facts() do
     [
-      # &Facts.ChampionPickedSummonerSpell.FactProcessor.process_game_at_url/1,
-      # &Facts.ChampionPlayedGame.FactProcessor.process_game_at_url/1,
+      &Facts.ChampionPickedSummonerSpell.FactProcessor.process_game_at_url/1,
+      &Facts.ChampionPlayedGame.FactProcessor.process_game_at_url/1,
       &Facts.ChampionPickedItem.FactProcessor.process_game_at_url/1
     ]
   end
