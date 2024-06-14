@@ -59,7 +59,7 @@ defmodule Scrapper.Processor.MatchProcessor do
           )
 
         queue_id ->
-          Storage.MatchStorage.S3MatchStorage.store_match(match_id, raw_match, queue_id)
+          Storage.MatchStorage.S3MatchStorage.store_match(match_id, raw_match, "matches")
       end
 
     match = LolAnalytics.Match.MatchRepo.get_match(match_id)
