@@ -7,8 +7,10 @@ defmodule Storage.MatchStorage.S3MatchStorage do
   end
 
   @impl true
-  def stream_files(path) do
-    ExAws.S3.list_objects_v2(path)
+  def stream_files(path, opts \\ []) do
+    patch = Keyword.get(opts, :patch, "")
+
+    ExAws.S3.list_objects_v2(path, prefix: patch)
     |> ExAws.stream!()
   end
 

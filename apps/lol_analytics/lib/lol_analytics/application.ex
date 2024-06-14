@@ -10,7 +10,8 @@ defmodule LoLAnalytics.Application do
     children = [
       LoLAnalytics.Repo,
       {DNSCluster, query: Application.get_env(:lol_analytics, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: LoLAnalytics.PubSub}
+      {Phoenix.PubSub, name: LoLAnalytics.PubSub},
+      {Task.Supervisor, name: LoLAnalytics.TaskSupervisor}
       # Start a worker by calling: LoLAnalytics.Worker.start_link(arg)
       # {LoLAnalytics.Worker, arg}
     ]

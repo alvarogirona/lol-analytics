@@ -1,6 +1,7 @@
 defmodule LolAnalytics.Facts.ChampionPickedItem.Repo do
   import Ecto.Query
 
+  alias LolAnalytics.Dimensions.Patch.PatchRepo
   alias LolAnalytics.Dimensions.Item.ItemSchema
   alias LolAnalytics.Dimensions.Champion.ChampionSchema
   alias LolAnalytics.Facts.ChampionPickedItem.Schema
@@ -33,7 +34,7 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.Repo do
     _match = MatchRepo.get_or_create(attrs.match_id)
     _champion = ChampionRepo.get_or_create(attrs.champion_id)
     _player = PlayerRepo.get_or_create(attrs.puuid)
-    _patch = PlayerRepo.get_or_create(attrs.patch_number)
+    _patch = PatchRepo.get_or_create(attrs.patch_number)
     _item_id = ItemRepo.get_or_create(attrs.item_id)
 
     prev =
