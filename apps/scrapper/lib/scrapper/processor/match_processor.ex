@@ -1,4 +1,5 @@
 defmodule Scrapper.Processor.MatchProcessor do
+  require Logger
   use Broadway
 
   def start_link(_opts) do
@@ -48,6 +49,8 @@ defmodule Scrapper.Processor.MatchProcessor do
     match_url =
       case decoded_match.info.queueId do
         420 ->
+          Logger.info("#{match_id} #{decoded_match.info.gameVersion}")
+
           Storage.MatchStorage.S3MatchStorage.store_match(
             match_id,
             raw_match,
