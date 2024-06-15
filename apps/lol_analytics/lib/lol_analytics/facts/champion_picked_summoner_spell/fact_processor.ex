@@ -8,20 +8,16 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.FactProcessor do
   @impl true
   @spec process_game_at_url(String.t()) :: any()
   def process_game_at_url(url) do
-    case HTTPoison.get(url) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        process_game_data(body)
-
-      {:error, %HTTPoison.Error{reason: reason}} ->
-        {:error, reason}
-
-      _ ->
-        {:error, "Could not fetch data from #{url}"}
+    with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
+           HTTPoison.get(url),
+         {:ok, decoded_match} <- Poison.decode(body, as: %LoLAPI.Model.MatchResponse{}) do
+      process_game_data(decoded_match)
+    else
+      _ -> {:error, "Could not process data from #{url}"}
     end
   end
 
-  defp process_game_data(data) do
-    decoded_match = Poison.decode!(data, as: %LoLAPI.Model.MatchResponse{})
+  defp process_game_data(decoded_match) do
     participants = decoded_match.info.participants
     version = extract_game_version(decoded_match)
 
