@@ -13,7 +13,9 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.FactProcessor do
          {:ok, decoded_match} <- Poison.decode(body, as: %LoLAPI.Model.MatchResponse{}) do
       process_game_data(decoded_match)
     else
-      _ -> {:error, "Could not process data from #{url}"}
+      _ ->
+        Logger.error("Could not process data from #{url} for ChampionPickedSummonerSpell")
+        {:error, "Could not process data from #{url}"}
     end
   end
 
