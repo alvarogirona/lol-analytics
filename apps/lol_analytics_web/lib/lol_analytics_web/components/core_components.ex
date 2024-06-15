@@ -302,9 +302,6 @@ defmodule LoLAnalyticsWeb.CoreComponents do
   end
 
   def input(%{type: "checkbox"} = assigns) do
-    IO.puts(">>>>")
-    IO.inspect(assigns)
-
     assigns =
       assign_new(assigns, :checked, fn ->
         Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])

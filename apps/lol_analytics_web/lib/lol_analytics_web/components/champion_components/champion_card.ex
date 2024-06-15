@@ -10,8 +10,6 @@ defmodule LolAnalyticsWeb.ChampionComponents.ChampionCard do
   attr :props, Props, default: %Props{}
 
   def champion_card(assigns) do
-    # IO.inspect(assigns)
-
     ~H"""
     <.link patch={"/champions/#{@props.id}?team-position=#{@props.team_position}"}>
       <div class="flex flex-col rounded-xl bg-clip-border overflow-hidden bg-gray-200">

@@ -25,7 +25,7 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
 
     changeset = Schema.changeset(prev || %Schema{}, attrs)
 
-    Repo.update(changeset)
+    Repo.insert_or_update(changeset)
   end
 
   def list_played_matches() do

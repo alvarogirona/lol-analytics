@@ -11,7 +11,6 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.FactProcessor do
   def process_game_at_url(url) do
     case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        IO.inspect(url)
         process_game_data(body)
 
       {:error, %HTTPoison.Error{reason: reason}} ->

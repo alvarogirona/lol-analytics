@@ -7,7 +7,6 @@ defmodule LolAnalytics.Dimensions.Item.ItemMetadata do
     data = get_items()
 
     data
-    # |> IO.inspect()
     |> Enum.each(&save_metadata/1)
   end
 
@@ -21,7 +20,6 @@ defmodule LolAnalytics.Dimensions.Item.ItemMetadata do
   end
 
   defp save_metadata({item_id, metadata}) do
-    # IO.inspect(item)
     ItemRepo.update(item_id, %{metadata: metadata})
   end
 end
