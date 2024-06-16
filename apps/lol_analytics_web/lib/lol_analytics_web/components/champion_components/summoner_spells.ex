@@ -5,7 +5,7 @@ defmodule LolAnalyticsWeb.ChampionComponents.SummonerSpells do
   def summoner_spells(assigns) do
     ~H"""
     <div class="flex flex-wrap flex-wrap gap-4">
-      <%= for spell <- assigns.spells.summoner_spells do %>
+      <%= for spell <- assigns.spells do %>
         <div class="has-tooltip">
           <div clas="flex flex-col gap-1">
             <img src={spell.image} />

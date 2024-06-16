@@ -4,6 +4,7 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
   import LolAnalyticsWeb.ChampionComponents.SummonerSpells
   import LolAnalyticsWeb.ChampionComponents.ChampionAvatar
   import LolAnalyticsWeb.ChampionComponents.Items
+  import LolAnalyticsWeb.Loader
 
   alias LolAnalyticsWeb.ChampionComponents.SummonerSpells.ShowMapper
 
@@ -18,34 +19,72 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:champion, load_champion_info(id))
-     |> assign(:summoner_spells, %{
-       summoner_spells: load_summoner_spells(id, team_position)
-     })
+     |> load_summoner_spells(id, team_position)
      |> load_items(id, team_position, patch)}
   end
 
-  defp load_summoner_spells(champion_id, team_position) do
-    LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo.get_champion_picked_summoners(
-      champion_id,
-      team_position
+  defp load_summoner_spells(socket, champion_id, team_position) do
+    socket
+    |> assign(:summoner_spells, %{status: :loading})
+    |> start_async(
+      :get_summoners,
+      fn ->
+        LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo.get_champion_picked_summoners(
+          champion_id,
+          team_position
+        )
+        |> ShowMapper.map_spells()
+      end
     )
-    |> ShowMapper.map_spells()
   end
 
   defp load_items(socket, champion_id, team_position, patch) do
-    items =
-      LolAnalytics.Facts.ChampionPickedItem.Repo.get_champion_picked_items(
-        champion_id,
-        team_position,
-        patch
-      )
-
-    all_items_mapped = items |> ShowMapper.map_items() |> Enum.take(30)
-    boots = items |> ShowMapper.extract_boots()
-
     socket
-    |> assign(:items, all_items_mapped)
-    |> assign(:boots, boots)
+    |> assign(:items, %{status: :loading})
+    |> assign(:boots, %{status: :loading})
+    |> start_async(
+      :get_items,
+      fn ->
+        items =
+          LolAnalytics.Facts.ChampionPickedItem.Repo.get_champion_picked_items(
+            champion_id,
+            team_position,
+            patch
+          )
+
+        popular_items = items |> ShowMapper.map_items() |> Enum.take(30)
+
+        boots = items |> ShowMapper.extract_boots()
+
+        %{boots: boots, popular: popular_items}
+      end
+    )
+  end
+
+  def handle_async(:get_items, {:ok, %{popular: popular, boots: boots}} = result, socket) do
+    IO.inspect(result)
+
+    socket =
+      socket
+      |> assign(:items, %{
+        status: :data,
+        data: %{
+          popular: popular,
+          boots: boots
+        }
+      })
+
+    {:noreply, socket}
+  end
+
+  def handle_async(:get_summoners, {:ok, summoner_spells}, socket) do
+    socket =
+      assign(socket, :summoner_spells, %{
+        status: :data,
+        data: summoner_spells
+      })
+
+    {:noreply, socket}
   end
 
   defp load_champion_info(champion_id) do
@@ -55,4 +94,55 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
 
   defp page_title(:show), do: "Show Champion"
   defp page_title(:edit), do: "Edit Champion"
+
+  def render_summoner_spells(assigns) do
+  end
+
+  def render_items(assigns) do
+    case assigns.items do
+      %{status: :loading} ->
+        ~H"""
+        <.loader />
+        """
+
+      %{status: :data, data: data} ->
+        ~H"""
+        <%= if Enum.count(data.boots) > 0 do %>
+          <h2 class="text-2xl">Items</h2>
+
+          <h2 class="text-xl">Boots</h2>
+
+          <div class="my-2" />
+
+          <.items items={data.boots} />
+
+          <div class="my-4" />
+        <% end %>
+
+        <h2 class="text-xl">Popular items</h2>
+
+        <div class="my-2" />
+
+        <.items items={data.popular} />
+        """
+    end
+  end
+
+  def render_summoners(assigns) do
+    case assigns.summoner_pells do
+      %{status: :loading} ->
+        ~H"""
+        <.loader />
+        """
+
+      %{status: :data, data: data} ->
+        ~H"""
+        <h2 class="text-2xl">Summoner spells</h2>
+
+        <div class="my-2" />
+
+        <.summoner_spells spells={data} />
+        """
+    end
+  end
 end
