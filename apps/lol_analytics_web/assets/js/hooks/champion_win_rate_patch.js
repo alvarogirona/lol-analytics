@@ -2,13 +2,7 @@ import Chart from "chart.js/auto"
 
 const ChampionWinRate = {
     mounted() {
-        console.log("mounted")
-        this.handleEvent("points", (event) => console.log("123"))
-
-        // this.props = { id: this.el.getAttribute("data-id") };
         this.handleEvent("win-rate", ({ winRates }) => {
-            console.log(">>>>>>>")
-            console.log(winRates);
             patches = winRates.map((winRate) => {
                 return winRate.patch_number
             })

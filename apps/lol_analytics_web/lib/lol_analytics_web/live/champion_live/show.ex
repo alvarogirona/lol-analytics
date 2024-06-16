@@ -76,7 +76,6 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
   end
 
   def handle_async(:get_win_rates, {:ok, result}, socket) do
-    IO.inspect(result)
     {:noreply, push_event(socket, "win-rate", %{winRates: result})}
   end
 
