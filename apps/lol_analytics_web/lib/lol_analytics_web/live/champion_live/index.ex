@@ -14,28 +14,36 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
   @impl true
   def mount(params, _session, socket) do
     role = params["role"] || "all"
+    patch = params["patch"] || "14.12"
 
     socket =
       socket
       |> assign(:selected_role, role)
+      |> assign(:selected_patch, patch)
       |> assign(:champions, %{status: :loading})
-      |> load_champs(role, "all")
+      |> load_champs(role, patch)
 
     {:ok, socket}
   end
 
   def handle_params(params, _uri, socket) do
-    case params["role"] do
-      role -> {:noreply, assign(socket, selected_role: role)}
-      _ -> {:noreply, socket}
-    end
+    role = params["role"] || "all"
+    patch = params["patch"] || "14.12"
+
+    {
+      :noreply,
+      assign(socket, selected_role: role)
+      |> assign(selected_patch: patch)
+    }
   end
 
   @impl true
   def handle_event("filter", %{"role" => selected_role} = params, socket) do
+    query = Map.merge(params, %{patch: socket.assigns.selected_patch || "14.12"})
+
     {:reply, %{},
      socket
-     |> push_patch(to: ~p"/champions?#{params}")
+     |> push_patch(to: ~p"/champions?#{query}")
      |> assign(:champions, %{status: :loading})
      |> load_champs(selected_role, socket.assigns.selected_patch)
      |> assign(:selected_role, selected_role)}
@@ -43,10 +51,12 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
 
   def handle_info(%{patch: patch}, socket) do
     selected_role = socket.assigns.selected_role
+    query_params = %{role: selected_role, patch: patch}
 
     socket =
       assign(socket, :champions, %{status: :loading})
       |> assign(:selected_patch, patch)
+      |> push_patch(to: ~p"/champions?#{query_params}")
       |> load_champs(selected_role, patch)
 
     {:noreply, socket}
