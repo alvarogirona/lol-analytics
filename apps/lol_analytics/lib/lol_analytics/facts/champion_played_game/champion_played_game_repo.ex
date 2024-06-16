@@ -51,7 +51,8 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
     end
   end
 
-  defp get_all_win_rates do
+  @spec champion_win_rates_by_patch(String.t(), String.t()) :: [map()]
+  def champion_win_rates_by_patch(champion_id, team_position) do
     query =
       from m in Schema,
         join: c in ChampionSchema,
@@ -66,13 +67,15 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
               m.is_win
             ),
           id: m.champion_id,
+          patch_number: m.patch_number,
           name: c.name,
           image: c.image,
           team_position: m.team_position,
           total_games: count("*")
         },
-        group_by: [m.champion_id, c.image, c.name, m.team_position],
-        having: count("*") > 100
+        group_by: [m.champion_id, c.image, c.name, m.patch_number, m.team_position],
+        where: m.team_position == ^team_position and m.champion_id == ^champion_id,
+        having: count("*") > 50
 
     Repo.all(query)
   end

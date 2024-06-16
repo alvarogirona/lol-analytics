@@ -19,23 +19,37 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:champion, load_champion_info(id))
+     |> load_win_rates(id, team_position)
      |> load_summoner_spells(id, team_position)
      |> load_items(id, team_position, patch)}
+  end
+
+  def load_win_rates(socket, champion_id, team_position) do
+    socket
+    |> start_async(:get_win_rates, fn ->
+      LolAnalytics.Facts.ChampionPlayedGame.Repo.champion_win_rates_by_patch(
+        champion_id,
+        team_position
+      )
+      |> Enum.sort(fn p1, p2 ->
+        [_, minor_1] = String.split(p1.patch_number, ".") |> Enum.map(&String.to_integer/1)
+        [_, minor_2] = String.split(p2.patch_number, ".") |> Enum.map(&String.to_integer/1)
+
+        p1 < p2 && minor_1 < minor_2
+      end)
+    end)
   end
 
   defp load_summoner_spells(socket, champion_id, team_position) do
     socket
     |> assign(:summoner_spells, %{status: :loading})
-    |> start_async(
-      :get_summoners,
-      fn ->
-        LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo.get_champion_picked_summoners(
-          champion_id,
-          team_position
-        )
-        |> ShowMapper.map_spells()
-      end
-    )
+    |> start_async(:get_summoners, fn ->
+      LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo.get_champion_picked_summoners(
+        champion_id,
+        team_position
+      )
+      |> ShowMapper.map_spells()
+    end)
   end
 
   defp load_items(socket, champion_id, team_position, patch) do
@@ -61,9 +75,12 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
     )
   end
 
-  def handle_async(:get_items, {:ok, %{popular: popular, boots: boots}} = result, socket) do
+  def handle_async(:get_win_rates, {:ok, result}, socket) do
     IO.inspect(result)
+    {:noreply, push_event(socket, "win-rate", %{winRates: result})}
+  end
 
+  def handle_async(:get_items, {:ok, %{popular: popular, boots: boots}} = result, socket) do
     socket =
       socket
       |> assign(:items, %{

@@ -4,11 +4,19 @@ defmodule LolAnalyticsWeb.ChampionComponents.ChampionAvatar do
   attr :id, :integer, required: true
   attr :image, :string, required: true
   attr :name, :string, required: true
+  attr :width, :integer, default: 100
+  attr :height, :integer, default: 100
 
   def champion_avatar(assigns) do
     ~H"""
+    <style>
+      .champion-avatar {
+       width: 100px;
+       height: 100px;
+      }
+    </style>
     <div class="flex flex-col w-40">
-      <img src={@image} alt="champion-icon" />
+      <img src={@image} class="champion-avatar" alt="champion-icon" />
     </div>
     """
   end

@@ -1,3 +1,9 @@
+<style>
+  .win-rate {
+    height: 250px;
+  }
+</style>
+
 <.header>
   <h1 class="text-4xl">
     <%= @champion.name %>
@@ -6,9 +12,11 @@
 
 <div class="my-6" />
 
-<.champion_avatar id={@champion.id} name={@champion.name}
-  image={"https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/#{@champion.image}"} />
-
+<div class="flex flex-row gap-4">
+  <.champion_avatar class="w-20" id={@champion.id} name={@champion.name}
+    image={"https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/#{@champion.image}"} />
+  <canvas class="w-full win-rate" height="250" class="win-rate" id="win-rate" phx-hook="ChampionWinRate" />
+</div>
 <div class="my-4" />
 
 <.render_summoners summoner_pells={@summoner_spells} />
