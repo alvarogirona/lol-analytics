@@ -12,7 +12,7 @@ defmodule LolAnalyticsWeb.ChampionComponents.Items do
             <img src={item.image} />
             <%!-- <p><%= item.name %></p> --%>
             <p><%= item.win_rate %>%</p>
-            <p><%= item.wins %>/<%= item.total_games %></p>
+            <p class="text-xs"><%= item.wins %>/<%= item.total_games %></p>
           </div>
           <span class="tooltip -mt-8 py-2 px-4 rounded-xl"><%= item.name %></span>
         </div>

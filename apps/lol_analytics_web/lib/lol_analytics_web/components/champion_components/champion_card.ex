@@ -1,5 +1,5 @@
 defmodule LolAnalyticsWeb.ChampionComponents.ChampionCard.Props do
-  defstruct [:id, :win_rate, :image, :name, :team_position, :wins, :total_games]
+  defstruct [:id, :win_rate, :image, :name, :team_position, :patch_number, :wins, :total_games]
 end
 
 defmodule LolAnalyticsWeb.ChampionComponents.ChampionCard do
@@ -11,7 +11,7 @@ defmodule LolAnalyticsWeb.ChampionComponents.ChampionCard do
 
   def champion_card(assigns) do
     ~H"""
-    <.link patch={"/champions/#{@props.id}?team-position=#{@props.team_position}"}>
+    <.link patch={"/champions/#{@props.id}?team-position=#{@props.team_position}&patch=#{@props.patch_number}"}>
       <div class="flex flex-col rounded-xl bg-clip-border overflow-hidden bg-gray-200">
         <div class="flex flex-col flex-col-reverse">
           <div class="flex w-auto px-4 py-1 opacity-80 gap-2 absolute z-10 align-bottom bg-black">
@@ -23,7 +23,7 @@ defmodule LolAnalyticsWeb.ChampionComponents.ChampionCard do
         <div class="py-1" />
         <div class="pl-2">
           <h3>Win rate: <%= @props.win_rate %></h3>
-          <h3>Wins: <%= @props.wins %> / <%= @props.total_games %></h3>
+          <p class="text-xs">Wins: <%= @props.wins %> / <%= @props.total_games %></p>
         </div>
         <div class="py-1" />
       </div>

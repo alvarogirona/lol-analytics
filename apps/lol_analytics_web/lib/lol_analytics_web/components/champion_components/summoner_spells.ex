@@ -10,7 +10,7 @@ defmodule LolAnalyticsWeb.ChampionComponents.SummonerSpells do
           <div clas="flex flex-col gap-1">
             <img src={spell.image} />
             <p><%= spell.win_rate %>%</p>
-            <p><%= spell.wins %>/<%= spell.total_games %></p>
+            <p class="text-xs"><%= spell.wins %>/<%= spell.total_games %></p>
           </div>
           <div class="tooltip -my-8 px-4 py-2 rounded-xl">
             <p><%= spell.name %></p>
