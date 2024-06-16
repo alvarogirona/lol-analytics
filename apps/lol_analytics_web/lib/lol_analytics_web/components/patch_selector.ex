@@ -33,6 +33,11 @@ defmodule LolAnalyticsWeb.PatchSelector do
   def render(assigns) do
     ~H"""
     <div phx-feedback-for={@id}>
+      <style>
+        .patch-selector {
+          width: 100px;
+        }
+      </style>
       <.form for={@patch_form} phx-change="validate" phx-target={@myself} phx-submit="save">
         <div class="flex gap-4">
           <p class="my-auto">Patch</p>
@@ -40,7 +45,7 @@ defmodule LolAnalyticsWeb.PatchSelector do
             phx-change="selected_patch"
             id="patch"
             name="patch"
-            class="block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
+            class="patch-selector block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
           >
             <%= for patch <- @patch_numbers do %>
               <option key={patch} phx-click="select-patch" name={patch} value={patch}>
