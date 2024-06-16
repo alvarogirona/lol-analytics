@@ -32,7 +32,26 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
     Repo.all(Schema)
   end
 
-  def get_win_rates do
+  def get_win_rates(opts \\ []) do
+    team_position = Keyword.get(opts, :team_position)
+    patch = Keyword.get(opts, :patch_number, "14.12")
+
+    case {team_position, patch} do
+      {nil, nil} ->
+        get_win_rates()
+
+      {"all", patch} ->
+        get_win_rates_for_patch(patch)
+
+      {nil, patch} ->
+        get_win_rates_for_patch(patch)
+
+      {team_position, patch} ->
+        get_win_rates_for_patch_and_team_position(patch, team_position)
+    end
+  end
+
+  defp get_all_win_rates do
     query =
       from m in Schema,
         join: c in ChampionSchema,
@@ -58,10 +77,9 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
     Repo.all(query)
   end
 
-  def get_win_rates_by_patch(champion_id, team_position) do
+  defp get_win_rates_for_patch(patch_number) do
     query =
       from m in Schema,
-        where: m.team_position == ^team_position,
         join: c in ChampionSchema,
         on: c.champion_id == m.champion_id,
         select: %{
@@ -80,12 +98,38 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
           team_position: m.team_position,
           total_games: count("*")
         },
-        where: c.champion_id == ^champion_id,
-        group_by: [m.champion_id, c.image, c.name, m.team_position, m.patch_number]
+        group_by: [m.champion_id, c.image, c.name, m.team_position, m.patch_number],
+        having: m.patch_number == ^patch_number and count("*") > 100
 
     Repo.all(query)
   end
 
-  def get_win_rates_by_roles() do
+  defp get_win_rates_for_patch_and_team_position(patch_number, team_position) do
+    query =
+      from m in Schema,
+        join: c in ChampionSchema,
+        on: c.champion_id == m.champion_id,
+        select: %{
+          wins: fragment("count(CASE WHEN ? THEN 1 END)", m.is_win),
+          win_rate:
+            fragment(
+              "
+              ((cast(count(CASE WHEN ? THEN 1 END) as float) / cast(count(*) as float)) * 100.0
+              )",
+              m.is_win
+            ),
+          id: m.champion_id,
+          patch_number: m.patch_number,
+          name: c.name,
+          image: c.image,
+          team_position: m.team_position,
+          total_games: count("*")
+        },
+        group_by: [m.champion_id, c.image, c.name, m.team_position, m.patch_number],
+        having:
+          m.team_position == ^team_position and m.patch_number == ^patch_number and
+            count("*") > 100
+
+    Repo.all(query)
   end
 end

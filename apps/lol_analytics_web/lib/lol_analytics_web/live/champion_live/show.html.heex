@@ -1,6 +1,10 @@
 <.header>
-  <%= @champion.name %>
+  <h1 class="text-4xl">
+    <%= @champion.name %>
+  </h1>
 </.header>
+
+<div class="my-6" />
 
 <.champion_avatar id={@champion.id} name={@champion.name}
   image={"https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/#{@champion.image}"} />

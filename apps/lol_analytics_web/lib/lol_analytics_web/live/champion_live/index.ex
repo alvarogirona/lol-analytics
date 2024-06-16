@@ -7,22 +7,19 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
 
   alias LolAnalyticsWeb.ChampionLive.Mapper
   alias LolAnalyticsWeb.ChampionLive.Components.ChampionFilters
+  alias LolAnalyticsWeb.PatchSelector
 
   @behaviour LolAnalyticsWeb.ChampionFilters.EventHandler
 
   @impl true
   def mount(params, _session, socket) do
-    role =
-      case params["role"] do
-        nil -> "all"
-        role -> role
-      end
+    role = params["role"] || "all"
 
     socket =
       socket
       |> assign(:selected_role, role)
       |> assign(:champions, %{status: :loading})
-      |> load_champs(role)
+      |> load_champs(role, "all")
 
     {:ok, socket}
   end
@@ -38,19 +35,46 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
   def handle_event("filter", %{"role" => selected_role} = params, socket) do
     {:reply, %{},
      socket
-     |> push_navigate(to: ~p"/champions?#{params}")
+     |> push_patch(to: ~p"/champions?#{params}")
      |> assign(:champions, %{status: :loading})
-     |> load_champs(selected_role)
+     |> load_champs(selected_role, socket.assigns.selected_patch)
      |> assign(:selected_role, selected_role)}
   end
 
-  defp load_champs(socket, selected_role) do
+  def handle_info(%{patch: patch}, socket) do
+    selected_role = socket.assigns.selected_role
+
+    socket =
+      assign(socket, :champions, %{status: :loading})
+      |> assign(:selected_patch, patch)
+      |> load_champs(selected_role, patch)
+
+    {:noreply, socket}
+  end
+
+  defp load_champs(socket, selected_role, "all") do
     socket
     |> start_async(
       :get_champs,
       fn ->
-        LolAnalytics.Facts.ChampionPlayedGame.Repo.get_win_rates()
-        |> filter_champs(selected_role)
+        LolAnalytics.Facts.ChampionPlayedGame.Repo.get_win_rates(team_position: selected_role)
+        |> Mapper.map_champs()
+        |> Enum.sort(&(&1.win_rate >= &2.win_rate))
+      end
+    )
+  end
+
+  defp load_champs(socket, selected_role, patch) do
+    socket
+    |> start_async(
+      :get_champs,
+      fn ->
+        LolAnalytics.Facts.ChampionPlayedGame.Repo.get_win_rates(
+          team_position: selected_role,
+          patch_number: patch
+        )
+        |> Mapper.map_champs()
+        |> Enum.sort(&(&1.win_rate >= &2.win_rate))
       end
     )
   end
@@ -75,14 +99,6 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
         </div>
         """
     end
-  end
-
-  defp filter_champs(champs, selected_role) do
-    champs =
-      LolAnalytics.Facts.ChampionPlayedGame.Repo.get_win_rates()
-      |> Enum.filter((&filter_role/1).(selected_role))
-      |> Mapper.map_champs()
-      |> Enum.sort(&(&1.win_rate >= &2.win_rate))
   end
 
   defp filter_role(role) do

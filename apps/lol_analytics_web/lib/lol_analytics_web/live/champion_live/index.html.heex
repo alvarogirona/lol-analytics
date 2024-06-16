@@ -10,6 +10,8 @@
     <.live_component module={ChampionFilters} id="role-filters" selectedrole={@selected_role || "all" } />
   </div>
 
+  <.live_component module={PatchSelector} id="patch-selector" />
+
   <div class="h-4"></div>
 
   <.render_champions champions={@champions} />
