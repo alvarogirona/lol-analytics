@@ -51,14 +51,14 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.Repo do
     |> Repo.insert_or_update()
   end
 
-  @spec get_champion_picked_items(String.t(), String.t()) :: list()
-  def get_champion_picked_items(champion_id, team_position) do
+  @spec get_champion_picked_items(String.t(), String.t(), String.t()) :: list()
+  def get_champion_picked_items(champion_id, team_position, patch_number) do
     query =
       from f in Schema,
         where:
           f.champion_id == ^champion_id and
             f.team_position == ^team_position and
-            f.item_id != 0,
+            f.item_id != 0 and f.patch_number == ^patch_number,
         join: c in ChampionSchema,
         on: c.champion_id == f.champion_id,
         join: i in ItemSchema,

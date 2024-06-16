@@ -13,15 +13,15 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
   end
 
   @impl true
-  def handle_params(%{"id" => id, "team-position" => team_position}, _, socket) do
+  def handle_params(%{"id" => id, "team-position" => team_position, "patch" => patch}, _, socket) do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:champion, load_champion_info(id) |> ShowMapper.map_champion())
+     |> assign(:champion, load_champion_info(id))
      |> assign(:summoner_spells, %{
-       summoner_spells: load_summoner_spells(id, team_position) |> ShowMapper.map_spells()
+       summoner_spells: load_summoner_spells(id, team_position)
      })
-     |> load_items(id, team_position)}
+     |> load_items(id, team_position, patch)}
   end
 
   defp load_summoner_spells(champion_id, team_position) do
@@ -29,13 +29,15 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
       champion_id,
       team_position
     )
+    |> ShowMapper.map_spells()
   end
 
-  defp load_items(socket, champion_id, team_position) do
+  defp load_items(socket, champion_id, team_position, patch) do
     items =
       LolAnalytics.Facts.ChampionPickedItem.Repo.get_champion_picked_items(
         champion_id,
-        team_position
+        team_position,
+        patch
       )
 
     all_items_mapped = items |> ShowMapper.map_items() |> Enum.take(30)
@@ -48,6 +50,7 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
 
   defp load_champion_info(champion_id) do
     LolAnalytics.Dimensions.Champion.ChampionRepo.get_or_create(champion_id)
+    |> ShowMapper.map_champion()
   end
 
   defp page_title(:show), do: "Show Champion"
