@@ -11,7 +11,6 @@ const ChampionWinRate = {
                 const data = {
                     labels: patches,
                     datasets: [{
-                        label: 'Win rate',
                         data: winRateValues,
                         fill: false,
                         borderColor: 'rgb(75, 192, 192)',
@@ -20,10 +19,20 @@ const ChampionWinRate = {
                 };
                 this.chart = new Chart(document.getElementById("win-rate"), {
                     type: 'line',
-                    data: data
+                    data: data,
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
                 })
                 this.chart.canvas.parentNode.style.height = '250px';
                 this.chart.canvas.parentNode.style.width = '400px';
+                this.chart.labels.display = false;
+                this.chart.options.legend.display = false
+                this.chart.options.legend.display = false
             }, 1000)
         });
     }

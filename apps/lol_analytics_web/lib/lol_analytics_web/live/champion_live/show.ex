@@ -75,6 +75,9 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
     )
   end
 
+  @impl true
+  @spec handle_async(:get_items | :get_summoners | :get_win_rates, {:ok, any()}, map()) ::
+          {:noreply, map()}
   def handle_async(:get_win_rates, {:ok, result}, socket) do
     {:noreply, push_event(socket, "win-rate", %{winRates: result})}
   end
