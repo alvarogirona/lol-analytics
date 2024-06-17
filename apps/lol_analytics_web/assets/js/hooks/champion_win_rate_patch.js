@@ -7,6 +7,7 @@ const ChampionWinRate = {
                 return winRate.patch_number
             })
             this.winRateValues = winRates.map((winRate) => winRate.win_rate)
+            // TODO: it breaks on resizing, should apply a better fix...
             setInterval(() => {
                 const data = {
                     labels: this.patches,
