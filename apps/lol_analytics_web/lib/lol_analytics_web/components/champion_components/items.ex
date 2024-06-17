@@ -9,7 +9,7 @@ defmodule LolAnalyticsWeb.ChampionComponents.Items do
       <%= for item <- assigns.items do %>
         <div class="has-tooltip">
           <div clas="flex flex-col gap-1 p-4">
-            <img src={item.image} />
+            <img class="rounded-xl" src={item.image} />
             <%!-- <p><%= item.name %></p> --%>
             <p><%= item.win_rate %>%</p>
             <p class="text-xs"><%= item.wins %>/<%= item.total_games %></p>

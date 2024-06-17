@@ -114,9 +114,6 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
   defp page_title(:show), do: "Show Champion"
   defp page_title(:edit), do: "Edit Champion"
 
-  def render_summoner_spells(assigns) do
-  end
-
   def render_items(assigns) do
     case assigns.items do
       %{status: :loading} ->
@@ -151,6 +148,8 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
     case assigns.summoner_pells do
       %{status: :loading} ->
         ~H"""
+        <h2 class="text-2xl">Summoner spells</h2>
+        <div class="my-2" />
         <.loader />
         """
 

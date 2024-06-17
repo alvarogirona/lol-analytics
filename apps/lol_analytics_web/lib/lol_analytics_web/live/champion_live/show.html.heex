@@ -20,7 +20,7 @@
 <div class="flex flex-row gap-4">
   <.champion_avatar class="w-20" id={@champion.id} name={@champion.name}
     image={"https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/#{@champion.image}"} />
-  <div class="win-rate-container">
+  <div class="win-rate-container" style="position: relative; height:250px; width:400px">
     <canvas class="w-full win-rate" height="250" class="win-rate" id="win-rate" phx-hook="ChampionWinRate" />
   </div>
 </div>

@@ -16,7 +16,7 @@ defmodule LolAnalyticsWeb.ChampionComponents.ChampionAvatar do
       }
     </style>
     <div class="flex flex-col w-40">
-      <img src={@image} class="champion-avatar" alt="champion-icon" />
+      <img src={@image} class="champion-avatar rounded-xl" alt="champion-icon" />
     </div>
     """
   end

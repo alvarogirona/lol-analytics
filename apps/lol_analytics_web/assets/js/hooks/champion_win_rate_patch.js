@@ -3,15 +3,15 @@ import Chart from "chart.js/auto"
 const ChampionWinRate = {
     mounted() {
         this.handleEvent("win-rate", ({ winRates }) => {
-            patches = winRates.map((winRate) => {
+            this.patches = winRates.map((winRate) => {
                 return winRate.patch_number
             })
-            winRateValues = winRates.map((winRate) => winRate.win_rate)
+            this.winRateValues = winRates.map((winRate) => winRate.win_rate)
             setInterval(() => {
                 const data = {
-                    labels: patches,
+                    labels: this.patches,
                     datasets: [{
-                        data: winRateValues,
+                        data: this.winRateValues,
                         fill: false,
                         borderColor: 'rgb(75, 192, 192)',
                         tension: 0.1
