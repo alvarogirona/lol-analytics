@@ -26,11 +26,27 @@ services:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
-      - rabbitmq_go_net
+      - rabbitmq_net
+  minio:
+    image: bitnami/minio:latest
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    networks:
+      - minionetwork
+    volumes:
+      - 'minio_data:/data'
+    environment:
+      - MINIO_ROOT_USER=your_username
+      - MINIO_ROOT_PASSWORD=your_pasword
+      - MINIO_DEFAULT_BUCKETS=your_bucket_name
 volumes:
   postgres-data:
+  minio_data:
 
 
 networks:
-  rabbitmq_go_net:
+  rabbitmq_net:
+    driver: bridge
+  minionetwork:
     driver: bridge
