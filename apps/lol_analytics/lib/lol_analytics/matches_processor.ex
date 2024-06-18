@@ -15,4 +15,8 @@ defmodule LolAnalytics.MatchesProcessor do
       LolAnalytics.Facts.FactsRunner.analyze_all_matches()
     end)
   end
+
+  def get_running_processes() do
+    Task.Supervisor.children(LoLAnalytics.TaskSupervisor)
+  end
 end
