@@ -10,7 +10,7 @@ defmodule LolAnalytics.MatchesProcessor do
     end)
   end
 
-  def proccess_all_matches() do
+  def process_all_matches() do
     Task.Supervisor.async(LoLAnalytics.TaskSupervisor, fn ->
       LolAnalytics.Facts.FactsRunner.analyze_all_matches()
     end)
