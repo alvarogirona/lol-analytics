@@ -9,4 +9,10 @@ defmodule LolAnalytics.MatchesProcessor do
       LolAnalytics.Facts.FactsRunner.analyze_by_patch(patch)
     end)
   end
+
+  def proccess_all_matches() do
+    Task.Supervisor.async(LoLAnalytics.TaskSupervisor, fn ->
+      LolAnalytics.Facts.FactsRunner.analyze_all_matches()
+    end)
+  end
 end
