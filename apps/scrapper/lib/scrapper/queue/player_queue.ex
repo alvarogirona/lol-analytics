@@ -16,27 +16,27 @@ defmodule Scrapper.Queue.PlayerQueue do
     {:ok, {channel, connection}}
   end
 
-  @spec queue_puuid(String.t()) :: nil
-  def queue_puuid(puuid) do
+  @spec enqueue_puuid(String.t()) :: nil
+  def enqueue_puuid(puuid) do
     case LolAnalytics.Player.PlayerRepo.get_player(puuid) do
-      nil -> GenServer.call(__MODULE__, {:queue_player, puuid})
-      player_entry -> queue_if_not_updated?(player_entry)
+      nil -> GenServer.call(__MODULE__, {:enqueue_player, puuid})
+      player_entry -> enqueue_if_not_updated?(player_entry)
     end
   end
 
-  @spec queue_if_not_updated?(%LolAnalytics.Player.PlayerSchema{}) :: nil
-  defp queue_if_not_updated?(player = %LolAnalytics.Player.PlayerSchema{}) do
+  @spec enqueue_if_not_updated?(%LolAnalytics.Player.PlayerSchema{}) :: nil
+  defp enqueue_if_not_updated?(player = %LolAnalytics.Player.PlayerSchema{}) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
     case player.last_processed_at do
       nil ->
-        GenServer.call(__MODULE__, {:queue_player, player.puuid})
+        GenServer.call(__MODULE__, {:enqueue_player, player.puuid})
 
       processed_at ->
         diff_in_hours = DateTime.diff(now, processed_at, :hour)
 
         if diff_in_hours > @hours_to_update_player do
-          GenServer.call(__MODULE__, {:queue_player, player.puuid})
+          GenServer.call(__MODULE__, {:enqueue_player, player.puuid})
         else
           Logger.info(
             "Player #{player.puuid} already processed at #{player.last_processed_at}, diff was #{diff_in_hours}"
@@ -45,7 +45,7 @@ defmodule Scrapper.Queue.PlayerQueue do
     end
   end
 
-  def handle_call({:queue_player, puuid}, _from, {channel, _} = state) do
+  def handle_call({:enqueue_player, puuid}, _from, {channel, _} = state) do
     LolAnalytics.Player.PlayerRepo.insert_player(puuid)
     AMQP.Basic.publish(channel, "", "player", puuid)
     {:reply, nil, state}

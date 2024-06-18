@@ -14,16 +14,16 @@ defmodule Scrapper.Queue.MatchQueue do
     {:ok, %{:channel => channel, :connection => connection}}
   end
 
-  @spec queue_match(String.t()) :: any()
-  def queue_match(match_id) do
+  @spec enqueue_match(String.t()) :: any()
+  def enqueue_match(match_id) do
     LolAnalytics.Match.MatchRepo.get_match(match_id)
     |> case do
-      nil -> GenServer.call(__MODULE__, {:queue_match, match_id})
+      nil -> GenServer.call(__MODULE__, {:enqueue_match, match_id})
       _match -> :already_processed
     end
   end
 
-  def handle_call({:queue_match, match_id}, _from, %{:channel => channel} = state) do
+  def handle_call({:enqueue_match, match_id}, _from, %{:channel => channel} = state) do
     AMQP.Basic.publish(channel, "", "match", match_id)
     {:reply, nil, state}
   end
