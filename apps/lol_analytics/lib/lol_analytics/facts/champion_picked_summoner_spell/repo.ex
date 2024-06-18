@@ -1,6 +1,7 @@
 defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
   import Ecto.Query
 
+  alias LolAnalytics.Dimensions.Patch.PatchRepo
   alias LolAnalytics.Dimensions.SummonerSpell.SummonerSpellSchema
   alias LolAnalytics.Dimensions.SummonerSpell.SummonerSpellRepo
   alias LolAnalytics.Dimensions.Champion.ChampionSchema
@@ -13,19 +14,19 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
 
   alias LoLAnalytics.Repo
 
-  @type insert_attrs :: %{
-          match_id: String.t(),
-          champion_id: String.t(),
-          puuid: String.t(),
-          summoner_spell_id: :integer
-        }
-
-  @spec insert(insert_attrs()) :: any()
+  @spec insert(%{
+          :champion_id => String.t(),
+          :match_id => String.t(),
+          :patch_number => String.t(),
+          :puuid => any(),
+          :summoner_spell_id => String.t()
+        }) :: any()
   def insert(attrs) do
     _match = MatchRepo.get_or_create(attrs.match_id)
     _champion = ChampionRepo.get_or_create(attrs.champion_id)
     _player = PlayerRepo.get_or_create(attrs.puuid)
     _spell = SummonerSpellRepo.get_or_create(attrs.summoner_spell_id)
+    _patch = PatchRepo.get_or_create(attrs.patch_number)
 
     prev =
       from(f in Schema,
@@ -41,10 +42,14 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
     |> Repo.insert_or_update()
   end
 
-  def get_champion_picked_summoners(champion_id, team_position \\ "MIDDLE") do
+  @spec get_champion_picked_summoners(String.t(), String.t(), String.t()) :: list()
+  def get_champion_picked_summoners(champion_id, team_position, patch_number) do
     query =
       from f in Schema,
-        where: f.champion_id == ^champion_id and f.team_position == ^team_position,
+        where:
+          f.champion_id == ^champion_id and
+            f.team_position == ^team_position and
+            f.patch_number == ^patch_number,
         join: c in ChampionSchema,
         on: c.champion_id == f.champion_id,
         join: s in SummonerSpellSchema,
@@ -73,9 +78,5 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
         ]
 
     Repo.all(query)
-  end
-
-  def list_facts() do
-    Repo.all(Schema)
   end
 end

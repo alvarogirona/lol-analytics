@@ -20,7 +20,7 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:champion, load_champion_info(id))
      |> load_win_rates(id, team_position)
-     |> load_summoner_spells(id, team_position)
+     |> load_summoner_spells(id, team_position, patch)
      |> load_items(id, team_position, patch)}
   end
 
@@ -40,13 +40,14 @@ defmodule LoLAnalyticsWeb.ChampionLive.Show do
     end)
   end
 
-  defp load_summoner_spells(socket, champion_id, team_position) do
+  defp load_summoner_spells(socket, champion_id, team_position, patch_number) do
     socket
     |> assign(:summoner_spells, %{status: :loading})
     |> start_async(:get_summoners, fn ->
       LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo.get_champion_picked_summoners(
         champion_id,
-        team_position
+        team_position,
+        patch_number
       )
       |> ShowMapper.map_spells()
     end)
