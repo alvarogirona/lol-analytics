@@ -4,11 +4,16 @@ defmodule LolAnalyticsWeb.PatchSelector do
   def mount(socket) do
     patches =
       LolAnalytics.Dimensions.Patch.PatchRepo.list_patches()
+      |> Enum.map(fn patch ->
+        %{patch_number: String.split(patch.patch_number, ".") |> Enum.take(2) |> Enum.join(".")}
+      end)
+      |> MapSet.new()
+      |> Enum.to_list()
       |> Enum.sort(fn %{patch_number: p1}, %{patch_number: p2} ->
-        [_, minor_1] = String.split(p1, ".") |> Enum.map(&String.to_integer/1)
-        [_, minor_2] = String.split(p2, ".") |> Enum.map(&String.to_integer/1)
+        [major_1, minor_1] = String.split(p1, ".") |> Enum.map(&String.to_integer/1)
+        [major_2, minor_2] = String.split(p2, ".") |> Enum.map(&String.to_integer/1)
 
-        p1 > p2 && minor_1 > minor_2
+        major_1 > major_2 || (major_1 == major_2 && minor_1 > minor_2)
       end)
 
     patch_numbers = Enum.map(patches, & &1.patch_number)

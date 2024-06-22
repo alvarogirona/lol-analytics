@@ -10,8 +10,8 @@ defmodule Scrapper.Application do
     children = [
       Scrapper.Queue.MatchQueue,
       Scrapper.Queue.PlayerQueue,
-      {Scrapper.Processor.MatchProcessor, []},
-      {Scrapper.Processor.PlayerProcessor, []}
+      {Scrapper.Consumer.MatchConsumer, []},
+      {Scrapper.Consumer.PlayerConsumer, []}
       # Starts a worker by calling: Scrapper.Worker.start_link(arg)
       # {Scrapper.Worker, arg}
     ]

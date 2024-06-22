@@ -1,4 +1,4 @@
-defmodule Scrapper.Processor.PlayerProcessor do
+defmodule Scrapper.Consumer.PlayerConsumer do
   use Broadway
 
   def start_link(_opts) do
@@ -20,7 +20,7 @@ defmodule Scrapper.Processor.PlayerProcessor do
            ]},
         concurrency: 1,
         rate_limiting: [
-          interval: 1000 * 10,
+          interval: 6700,
           allowed_messages: 1
         ]
       ],

@@ -12,7 +12,12 @@ defmodule Scrapper.Queue.PlayerQueue do
   def init(_opts) do
     {:ok, connection} = AMQP.Connection.open()
     {:ok, channel} = AMQP.Channel.open(connection)
-    AMQP.Queue.declare(channel, "player", durable: true)
+
+    AMQP.Queue.declare(channel, "player",
+      durable: true,
+      arguments: [{"x-max-length", :long, 1000}]
+    )
+
     {:ok, {channel, connection}}
   end
 
