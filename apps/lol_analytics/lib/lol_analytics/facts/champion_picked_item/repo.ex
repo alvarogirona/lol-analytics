@@ -31,11 +31,17 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.Repo do
           :slot_number => integer()
         }) :: {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
   def insert(attrs) do
-    match = MatchRepo.get_or_create(attrs.match_id)
     _champion = ChampionRepo.get_or_create(attrs.champion_id)
     _player = PlayerRepo.get_or_create(attrs.puuid)
     _patch = PatchRepo.get_or_create(attrs.patch_number)
     _item_id = ItemRepo.get_or_create(attrs.item_id)
+
+    match =
+      MatchRepo.get_or_create(%{
+        match_id: attrs.match_id,
+        patch_id: attrs.patch_id,
+        queue_id: attrs.queue_id
+      })
 
     prev =
       from(f in Schema,

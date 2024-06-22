@@ -4,6 +4,8 @@ defmodule LolAnalytics.Dimensions.Match.MatchSchema do
 
   @casting_attrs [
     :match_id,
+    :queue_id,
+    :patch_number,
     :fact_champion_picked_item_status,
     :fact_champion_picked_summoner_spell_status,
     :fact_champion_played_game_status
@@ -11,6 +13,8 @@ defmodule LolAnalytics.Dimensions.Match.MatchSchema do
 
   schema "dim_match" do
     field :match_id, :string
+    field :patch_number, :string
+    field :queue_id, :integer
     field :fact_champion_picked_item_status, :integer
     field :fact_champion_picked_summoner_spell_status, :integer
     field :fact_champion_played_game_status, :integer

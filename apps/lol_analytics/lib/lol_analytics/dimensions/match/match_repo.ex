@@ -1,11 +1,17 @@
 defmodule LolAnalytics.Dimensions.Match.MatchRepo do
+  alias LolAnalytics.Dimensions.Patch.PatchRepo
   alias LolAnalytics.Dimensions.Match.MatchSchema
   alias LoLAnalytics.Repo
 
   import Ecto.Query
 
-  @spec get_or_create(String.t()) :: %MatchSchema{}
-  def get_or_create(match_id) do
+  @spec get_or_create(%{
+          :match_id => String.t(),
+          :queue_id => integer(),
+          :patch_number => String.t()
+        }) :: %MatchSchema{}
+  def get_or_create(%{match_id: match_id, queue_id: queue_id, patch_number: patch_number}) do
+    _patch = PatchRepo.get_or_create(patch_number)
     query = from m in MatchSchema, where: m.match_id == ^match_id
     match = Repo.one(query)
 
@@ -13,6 +19,9 @@ defmodule LolAnalytics.Dimensions.Match.MatchRepo do
       nil ->
         %MatchSchema{}
         |> MatchSchema.changeset(%{
+          match_id: match_id,
+          patch_number: patch_number,
+          queue_id: queue_id,
           fact_champion_played_game_status: 0,
           fact_champion_picked_item_status: 0,
           fact_champion_picked_summoner_spell_status: 0

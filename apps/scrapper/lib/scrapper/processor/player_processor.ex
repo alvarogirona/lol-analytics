@@ -52,7 +52,7 @@ defmodule Scrapper.Processor.PlayerProcessor do
         {
           matches
           |> Enum.each(fn match_id ->
-            Scrapper.Queue.MatchQueue.queue_match(match_id)
+            Scrapper.Queue.MatchQueue.enqueue_match(match_id)
           end)
         }
 

@@ -58,6 +58,12 @@ defmodule Scrapper.Processor.MatchProcessor do
             "#{decoded_match.info.gameVersion}"
           )
 
+          LolAnalytics.Dimensions.Match.MatchRepo.get_or_create(%{
+            match_id: decoded_match.metadata.matchId,
+            patch_number: decoded_match.info.gameVersion,
+            queue_id: 420
+          })
+
         _queue_id ->
           Storage.MatchStorage.S3MatchStorage.store_match(match_id, raw_match, "matches")
       end
@@ -79,7 +85,7 @@ defmodule Scrapper.Processor.MatchProcessor do
     |> Enum.shuffle()
     |> Enum.take(2)
     |> Enum.each(fn participant_puuid ->
-      Scrapper.Queue.PlayerQueue.queue_puuid(participant_puuid)
+      Scrapper.Queue.PlayerQueue.enqueue_puuid(participant_puuid)
     end)
   end
 

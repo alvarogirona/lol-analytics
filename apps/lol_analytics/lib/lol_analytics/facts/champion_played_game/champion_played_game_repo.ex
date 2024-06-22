@@ -10,10 +10,10 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
   alias LoLAnalytics.Repo
 
   def insert(attrs) do
-    match = MatchRepo.get_or_create(attrs.match_id)
     _champion = ChampionRepo.get_or_create(attrs.champion_id)
     _player = PlayerRepo.get_or_create(attrs.puuid)
     _patch = PatchRepo.get_or_create(attrs.patch_number)
+    match = MatchRepo.get_or_create(attrs.match_id)
 
     prev =
       from(f in Schema,
