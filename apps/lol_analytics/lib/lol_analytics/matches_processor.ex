@@ -1,6 +1,10 @@
 defmodule LolAnalytics.MatchesProcessor do
   use GenServer
 
+  def init(init_args) do
+    {:ok, init_args}
+  end
+
   @doc """
   iex> LolAnalytics.MatchesProcessor.process_for_patch "14.12.593.5894"
   """

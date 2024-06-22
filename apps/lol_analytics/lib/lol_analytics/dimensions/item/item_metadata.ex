@@ -1,12 +1,9 @@
 defmodule LolAnalytics.Dimensions.Item.ItemMetadata do
   alias LolAnalytics.Dimensions.Item.ItemRepo
-  alias LolAnalytics.Dimensions.Champion.ChampionRepo
   @items_data_url "https://ddragon.leagueoflegends.com/cdn/14.11.1/data/en_US/item.json"
 
   def update_metadata() do
-    data = get_items()
-
-    data
+    get_items()
     |> Enum.each(&save_metadata/1)
   end
 

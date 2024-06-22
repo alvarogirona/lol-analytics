@@ -2,10 +2,10 @@
 
 ## Requirements
 
-- Postgresql
+- PostgreSQL
 - Elixir
 - RabbitMQ
-- Minio
+- MinIO
 
 A `docker-compose` file is provided to run them locally.
 
@@ -14,7 +14,7 @@ A `docker-compose` file is provided to run them locally.
 The followign environment variables are required:
 
 ```
-export RIOT_API_KEY="API-KEY"
+export RIOT_API_KEY="{API-KEY}"
 
 export EX_AWS_SECRET_KEY="{SECRET}"
 export EX_AWS_ACCESS_KEY="{ACCESS}"
@@ -28,7 +28,6 @@ export SECRET_KEY_BASE="SECRET-KEY"
 
 ```
 mix deps.get
-mix compile
 mix ecto.create && mix ecto.migrate
 iex -S mix phx.server
 ```
