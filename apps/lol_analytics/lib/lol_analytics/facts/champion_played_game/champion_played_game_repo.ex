@@ -10,7 +10,7 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
   alias LoLAnalytics.Repo
 
   def insert(attrs) do
-    _match = MatchRepo.get_or_create(attrs.match_id)
+    match = MatchRepo.get_or_create(attrs.match_id)
     _champion = ChampionRepo.get_or_create(attrs.champion_id)
     _player = PlayerRepo.get_or_create(attrs.puuid)
     _patch = PatchRepo.get_or_create(attrs.patch_number)
@@ -26,6 +26,7 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
     changeset = Schema.changeset(prev || %Schema{}, attrs)
 
     Repo.insert_or_update(changeset)
+    MatchRepo.update(match, %{fact_champion_played_game: :processed})
   end
 
   def list_played_matches() do

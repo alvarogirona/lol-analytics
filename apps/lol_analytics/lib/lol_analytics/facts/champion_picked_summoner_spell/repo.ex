@@ -22,7 +22,7 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
           :summoner_spell_id => String.t()
         }) :: any()
   def insert(attrs) do
-    _match = MatchRepo.get_or_create(attrs.match_id)
+    match = MatchRepo.get_or_create(attrs.match_id)
     _champion = ChampionRepo.get_or_create(attrs.champion_id)
     _player = PlayerRepo.get_or_create(attrs.puuid)
     _spell = SummonerSpellRepo.get_or_create(attrs.summoner_spell_id)
@@ -40,6 +40,8 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
 
     Schema.changeset(prev || %Schema{}, attrs)
     |> Repo.insert_or_update()
+
+    MatchRepo.update(match, %{fact_champion_picked_summoner_spell: :processed})
   end
 
   @spec get_champion_picked_summoners(String.t(), String.t(), String.t()) :: list()
