@@ -16,19 +16,21 @@ defmodule LoLAnalytics.Repo.Migrations.AnalyticsTables do
 
     create index("dim_item", [:item_id], unique: true)
 
-    create table("dim_match") do
-      add :match_id, :string, primary_key: true, null: false
-      timestamps()
-    end
-
-    create index("dim_match", [:match_id], unique: true)
-
     create table("dim_patch") do
       add :patch_number, :string, primary_key: true, null: false
       timestamps()
     end
 
     create index("dim_patch", [:patch_number], unique: true)
+
+    create table("dim_match") do
+      add :patch_number, references("dim_patch", column: :patch_number, type: :string)
+      add :match_id, :string, primary_key: true, null: false
+      timestamps()
+    end
+
+    create index("dim_match", [:patch_number])
+    create index("dim_match", [:match_id], unique: true)
 
     create table("dim_player") do
       add :puuid, :string, primary_key: true, null: false
