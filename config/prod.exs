@@ -8,7 +8,7 @@ import Config
 config :lol_analytics_web, LoLAnalyticsWeb.Endpoint,
   server: true,
   http: [ip: {0, 0, 0, 0}, port: 4000],
-  url: [host: "localhost", port: 80],
+  url: [host: "lol-analytics.kaizer.cloud", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production

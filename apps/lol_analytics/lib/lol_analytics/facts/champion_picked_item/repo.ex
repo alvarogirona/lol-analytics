@@ -39,7 +39,7 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.Repo do
     match =
       MatchRepo.get_or_create(%{
         match_id: attrs.match_id,
-        patch_id: attrs.patch_id,
+        patch_number: attrs.patch_number,
         queue_id: attrs.queue_id
       })
 
