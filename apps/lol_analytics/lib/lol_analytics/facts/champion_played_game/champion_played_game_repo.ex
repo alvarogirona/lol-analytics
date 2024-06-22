@@ -13,7 +13,12 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.Repo do
     _champion = ChampionRepo.get_or_create(attrs.champion_id)
     _player = PlayerRepo.get_or_create(attrs.puuid)
     _patch = PatchRepo.get_or_create(attrs.patch_number)
-    match = MatchRepo.get_or_create(attrs.match_id)
+    match =
+      MatchRepo.get_or_create(%{
+        match_id: attrs.match_id,
+        patch_number: attrs.patch_number,
+        queue_id: attrs.queue_id
+      })
 
     prev =
       from(f in Schema,
