@@ -33,6 +33,13 @@ defmodule LolAnalytics.Dimensions.Match.MatchRepo do
     end
   end
 
+  @spec get(String.t()) :: nil | %MatchSchema{}
+  def get(match_id) do
+    query = from m in MatchSchema, where: m.match_id == ^match_id
+
+    Repo.one(query)
+  end
+
   @type update_attrs :: %{
           optional(:fact_champion_played_game_status) => process_status(),
           optional(:fact_champion_picked_item_status) => process_status(),

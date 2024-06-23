@@ -69,19 +69,6 @@ defmodule Scrapper.Consumer.MatchConsumer do
             Storage.MatchStorage.S3MatchStorage.store_match(match_id, raw_match, "matches")
         end
 
-      match = LolAnalytics.Match.MatchRepo.get_match(match_id)
-
-      case match do
-        nil ->
-          LolAnalytics.Match.MatchRepo.insert_match(match_id)
-
-        _ ->
-          LolAnalytics.Match.MatchRepo.update_match(match, %{
-            :processed => true,
-            :match_url => match_url
-          })
-      end
-
       decoded_match.metadata.participants
       # |> Enum.shuffle()
       # |> Enum.take(2)

@@ -16,7 +16,7 @@ defmodule Scrapper.Queue.MatchQueue do
 
   @spec enqueue_match(String.t()) :: any()
   def enqueue_match(match_id) do
-    LolAnalytics.Match.MatchRepo.get_match(match_id)
+    LolAnalytics.Dimensions.Match.MatchRepo.get(match_id)
     |> case do
       nil -> GenServer.call(__MODULE__, {:enqueue_match, match_id})
       _match -> :already_processed
