@@ -3,6 +3,7 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.FactProcessor do
 
   require Logger
 
+  alias LolAnalytics.Dimensions.Match.MatchRepo
   alias LolAnalytics.Facts.ChampionPickedSummonerSpell
 
   @impl true
@@ -22,6 +23,13 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.FactProcessor do
   defp process_game_data(decoded_match) do
     participants = decoded_match.info.participants
     version = extract_game_version(decoded_match)
+
+    match =
+      MatchRepo.get_or_create(%{
+        match_id: decoded_match.metadata.matchId,
+        patch_number: decoded_match.info.gameVersion,
+        queue_id: decoded_match.info.queueId
+      })
 
     Logger.info("Processing ChampionPickedSummoner for match #{decoded_match.metadata.matchId}")
 
@@ -56,6 +64,8 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.FactProcessor do
         ChampionPickedSummonerSpell.Repo.insert(attrs_spell_2)
       end
     end)
+
+    MatchRepo.update(match, %{fact_champion_picked_summoner_spell_status: :processed})
   end
 
   defp extract_game_version(game_data) do

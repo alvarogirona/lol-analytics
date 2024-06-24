@@ -1,4 +1,5 @@
 defmodule LolAnalytics.Facts.ChampionPickedItem.FactProcessor do
+  alias LolAnalytics.Dimensions.Match.MatchRepo
   alias LolAnalytics.Facts.ChampionPickedItem.Repo
   require Logger
   @behaviour LolAnalytics.Facts.FactBehaviour
@@ -23,6 +24,13 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.FactProcessor do
   defp process_game_data(decoded_match) do
     participants = decoded_match.info.participants
     version = extract_game_version(decoded_match)
+
+    match =
+      MatchRepo.get_or_create(%{
+        match_id: decoded_match.metadata.matchId,
+        patch_number: decoded_match.info.gameVersion,
+        queue_id: decoded_match.info.queueId
+      })
 
     Logger.info("Processing ChampionPickedItem for match #{decoded_match.metadata.matchId}")
 
@@ -49,6 +57,8 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.FactProcessor do
         end)
       end
     end)
+
+    MatchRepo.update(match, %{fact_champion_picked_item_status: :processed})
   end
 
   defp extract_game_version(game_data) do

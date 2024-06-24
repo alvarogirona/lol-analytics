@@ -1,4 +1,5 @@
 defmodule LolAnalytics.Facts.ChampionPlayedGame.FactProcessor do
+  alias LolAnalytics.Dimensions.Match.MatchRepo
   require Logger
 
   @behaviour LolAnalytics.Facts.FactBehaviour
@@ -21,6 +22,13 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.FactProcessor do
     participants = decoded_match.info.participants
     version = extract_game_version(decoded_match)
 
+    match =
+      MatchRepo.get_or_create(%{
+        match_id: decoded_match.metadata.matchId,
+        patch_number: decoded_match.info.gameVersion,
+        queue_id: decoded_match.info.queueId
+      })
+
     Logger.info("Processing ChampionPlayedMatch for #{decoded_match.metadata.matchId}")
 
     participants
@@ -40,6 +48,8 @@ defmodule LolAnalytics.Facts.ChampionPlayedGame.FactProcessor do
         LolAnalytics.Facts.ChampionPlayedGame.Repo.insert(attrs)
       end
     end)
+
+    MatchRepo.update(match, %{fact_champion_played_game_status: :processed})
   end
 
   defp extract_game_version(game_data) do

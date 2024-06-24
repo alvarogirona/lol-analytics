@@ -36,7 +36,7 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.Repo do
     _patch = PatchRepo.get_or_create(attrs.patch_number)
     _item_id = ItemRepo.get_or_create(attrs.item_id)
 
-    match =
+    _match =
       MatchRepo.get_or_create(%{
         match_id: attrs.match_id,
         patch_number: attrs.patch_number,
@@ -55,8 +55,6 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.Repo do
 
     Schema.changeset(prev || %Schema{}, attrs)
     |> Repo.insert_or_update()
-
-    MatchRepo.update(match, %{fact_champion_picked_item: :processed})
   end
 
   @spec get_champion_picked_items(String.t(), String.t(), String.t()) :: list()

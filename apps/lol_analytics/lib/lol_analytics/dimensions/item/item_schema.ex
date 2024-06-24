@@ -13,6 +13,6 @@ defmodule LolAnalytics.Dimensions.Item.ItemSchema do
   def changeset(item = %__MODULE__{}, attrs \\ %{}) do
     item
     |> cast(attrs, @args)
-    |> validate_required(@args)
+    |> validate_required([:item_id])
   end
 end

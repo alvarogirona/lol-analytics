@@ -26,7 +26,7 @@ defmodule LolAnalytics.Dimensions.Match.MatchRepo do
           fact_champion_picked_item_status: 0,
           fact_champion_picked_summoner_spell_status: 0
         })
-        |> Repo.insert()
+        |> Repo.insert!()
 
       match ->
         match
@@ -54,7 +54,7 @@ defmodule LolAnalytics.Dimensions.Match.MatchRepo do
 
     match
     |> MatchSchema.changeset(mapped_attrs)
-    |> Repo.update()
+    |> Repo.update!()
   end
 
   def list_matches() do
