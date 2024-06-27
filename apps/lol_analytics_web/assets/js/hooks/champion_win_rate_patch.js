@@ -3,10 +3,18 @@ import Chart from "chart.js/auto"
 const ChampionWinRate = {
     mounted() {
         this.handleEvent("win-rate", ({ winRates }) => {
-            this.patches = winRates.map((winRate) => {
+            this.sortedWinRates = winRates.sort((a, b) => {
+                let [p1Major, p1Minor] = a.patch_number.split(".").map(Number);
+                let [p2Major, p2Minor] = b.patch_number.split(".").map(Number);
+
+
+                if (p1Major > p2Major || (p1Major == p2Major && p1Minor > p2Minor)) return 1;
+                return -1
+            })
+            this.patches = this.sortedWinRates.map((winRate) => {
                 return winRate.patch_number
             })
-            this.winRateValues = winRates.map((winRate) => winRate.win_rate)
+            this.winRateValues = this.sortedWinRates.map((winRate) => winRate.win_rate)
             // TODO: it breaks on liveview updates, should apply a better fix...
             setInterval(() => {
                 const data = {
