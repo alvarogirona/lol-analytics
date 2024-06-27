@@ -27,13 +27,6 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.Repo do
     _spell = SummonerSpellRepo.get_or_create(attrs.summoner_spell_id)
     _patch = PatchRepo.get_or_create(attrs.patch_number)
 
-    _match =
-      MatchRepo.get_or_create(%{
-        match_id: attrs.match_id,
-        patch_number: attrs.patch_number,
-        queue_id: attrs.queue_id
-      })
-
     prev =
       from(f in Schema,
         where:

@@ -36,13 +36,6 @@ defmodule LolAnalytics.Facts.ChampionPickedItem.Repo do
     _patch = PatchRepo.get_or_create(attrs.patch_number)
     _item_id = ItemRepo.get_or_create(attrs.item_id)
 
-    _match =
-      MatchRepo.get_or_create(%{
-        match_id: attrs.match_id,
-        patch_number: attrs.patch_number,
-        queue_id: attrs.queue_id
-      })
-
     prev =
       from(f in Schema,
         where:
