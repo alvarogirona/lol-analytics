@@ -45,7 +45,8 @@ defmodule LoLAnalytics.MixProject do
       {:storage, in_umbrella: true},
       {:httpoison, "~> 2.2"},
       {:poison, "~> 5.0"},
-      {:gen_stage, "~> 1.2.1"}
+      {:gen_stage, "~> 1.2.1"},
+      {:broadway, "~> 1.1"}
     ]
   end
 

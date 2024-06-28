@@ -1,22 +1,25 @@
 defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.FactProcessor do
-  @behaviour LolAnalytics.Facts.FactBehaviour
-
   require Logger
 
+  alias LolAnalytics.Dimensions.Match.MatchSchema
   alias LolAnalytics.Dimensions.Match.MatchRepo
   alias LolAnalytics.Facts.ChampionPickedSummonerSpell
 
-  @impl true
-  @spec process_game_at_url(String.t()) :: any()
-  def process_game_at_url(url) do
+  @spec process_match(%MatchSchema{}) :: :ok | {:error, String.t()}
+  def process_match(match) do
+    match_url = "http://192.168.1.55:9000/ranked/#{match.patch_number}/#{match.match_id}.json"
+
     with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
-           HTTPoison.get(url),
+           HTTPoison.get(match_url),
          {:ok, decoded_match} <- Poison.decode(body, as: %LoLAPI.Model.MatchResponse{}) do
       process_game_data(decoded_match)
+      MatchRepo.update(match, %{fact_champion_picked_summoner_spell_status: :processed})
+      :ok
     else
       _ ->
-        Logger.error("Could not process data from #{url} for ChampionPickedSummonerSpell")
-        {:error, "Could not process data from #{url}"}
+        MatchRepo.update(match, fact_champion_picked_summoner_spell_status: :error_match_not_found)
+        Logger.error("Could not process data from #{match_url} for ChampionPickedItem")
+        {:error, "Could not process data from #{match_url}"}
     end
   end
 
@@ -64,8 +67,6 @@ defmodule LolAnalytics.Facts.ChampionPickedSummonerSpell.FactProcessor do
         ChampionPickedSummonerSpell.Repo.insert(attrs_spell_2)
       end
     end)
-
-    MatchRepo.update(match, %{fact_champion_picked_summoner_spell_status: :processed})
   end
 
   defp extract_game_version(game_data) do

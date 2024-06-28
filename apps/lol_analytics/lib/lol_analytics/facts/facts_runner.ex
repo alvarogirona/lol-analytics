@@ -1,34 +1,18 @@
 defmodule LolAnalytics.Facts.FactsRunner do
   alias LolAnalytics.Facts
 
-  def analyze_by_patch(patch) do
-    Storage.MatchStorage.S3MatchStorage.stream_files("ranked", patch: patch)
-    |> peach(fn %{key: path} ->
-      get_facts()
-      |> Enum.each(fn fact_runner ->
-        apply(fact_runner, ["http://192.168.1.55:9000/ranked/#{path}"])
-      end)
+  def analyze_match(match) do
+    get_facts()
+    |> Enum.each(fn fact_runner ->
+      apply(fact_runner, [match])
     end)
-  end
-
-  def analyze_all_matches do
-    Storage.MatchStorage.S3MatchStorage.stream_files("ranked")
-    |> peach(fn %{key: path} ->
-      get_facts()
-      |> Enum.each(fn fact_runner ->
-        apply(fact_runner, ["http://192.168.1.55:9000/ranked/#{path}"])
-      end)
-    end)
-  end
-
-  def analyze_match() do
   end
 
   def get_facts() do
     [
-      &Facts.ChampionPickedSummonerSpell.FactProcessor.process_game_at_url/1,
-      &Facts.ChampionPlayedGame.FactProcessor.process_game_at_url/1,
-      &Facts.ChampionPickedItem.FactProcessor.process_game_at_url/1
+      &Facts.ChampionPickedSummonerSpell.FactProcessor.process_match/1,
+      &Facts.ChampionPlayedGame.FactProcessor.process_match/1,
+      &Facts.ChampionPickedItem.FactProcessor.process_match/1
     ]
   end
 

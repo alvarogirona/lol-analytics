@@ -61,10 +61,25 @@ defmodule LolAnalytics.Dimensions.Match.MatchRepo do
     Repo.all(MatchSchema)
   end
 
+  def list_unprocessed_matches(limit, queue \\ 420) do
+    query =
+      from m in MatchSchema,
+        where:
+          (m.fact_champion_picked_item_status == 0 or
+             m.fact_champion_picked_summoner_spell_status == 0 or
+             m.fact_champion_played_game_status == 0) and
+            m.queue_id == ^queue,
+        order_by: [desc: m.updated_at],
+        limit: ^limit
+
+    Repo.all(query)
+  end
+
   @type process_status :: :not_processed | :processed | :error
   defp process_status_atom_to_db(:not_processed), do: 0
   defp process_status_atom_to_db(:enqueued), do: 1
   defp process_status_atom_to_db(:processed), do: 2
   defp process_status_atom_to_db(:error), do: 3
+  defp process_status_atom_to_db(:error_match_not_found), do: 4
   defp process_status_atom_to_db(_), do: raise("Invalid processing status")
 end

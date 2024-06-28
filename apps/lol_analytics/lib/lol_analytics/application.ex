@@ -11,7 +11,9 @@ defmodule LoLAnalytics.Application do
       LoLAnalytics.Repo,
       {DNSCluster, query: Application.get_env(:lol_analytics, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: LoLAnalytics.PubSub},
-      {Task.Supervisor, name: LoLAnalytics.TaskSupervisor}
+      {Task.Supervisor, name: LoLAnalytics.TaskSupervisor},
+      {LolAnalytics.MatchProcessor.MatchesBroadwayProcessor, []},
+      {LolAnalytics.MatchProcessor.MatchesProducer, []}
       # Start a worker by calling: LoLAnalytics.Worker.start_link(arg)
       # {LoLAnalytics.Worker, arg}
     ]
