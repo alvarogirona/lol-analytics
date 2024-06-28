@@ -44,7 +44,8 @@ defmodule LoLAnalytics.MixProject do
       {:lol_api, in_umbrella: true},
       {:storage, in_umbrella: true},
       {:httpoison, "~> 2.2"},
-      {:poison, "~> 5.0"}
+      {:poison, "~> 5.0"},
+      {:gen_stage, "~> 1.2.1"}
     ]
   end
 
