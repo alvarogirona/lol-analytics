@@ -50,7 +50,7 @@ defmodule LolAnalyticsWeb.PatchSelector do
             phx-change="selected_patch"
             id="patch"
             name="patch"
-            class="patch-selector block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
+            class="patch-selector cursor-pointer block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
           >
             <%= for patch <- @patch_numbers do %>
               <option key={patch} phx-click="select-patch" name={patch} value={patch}>

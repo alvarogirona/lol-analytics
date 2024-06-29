@@ -2,6 +2,7 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
   use LoLAnalyticsWeb, :live_view
 
   import LolAnalyticsWeb.ChampionComponents.ChampionCard
+  import LolAnalyticsWeb.ChampionLive.Components.ChampionsList
   import LolAnalyticsWeb.Loader
   import Phoenix.VerifiedRoutes
 
@@ -21,6 +22,7 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
       |> assign(:selected_role, role)
       |> assign(:selected_patch, patch)
       |> assign(:champions, %{status: :loading})
+      |> assign(:display_mode, "grid")
       |> load_champs(role, patch)
 
     {:ok, socket}
@@ -47,6 +49,10 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
      |> assign(:champions, %{status: :loading})
      |> load_champs(selected_role, socket.assigns.selected_patch)
      |> assign(:selected_role, selected_role)}
+  end
+
+  def handle_event("set-display-mode", %{"mode" => mode}, socket) do
+    {:noreply, assign(socket, :display_mode, mode)}
   end
 
   def handle_info(%{patch: patch}, socket) do
@@ -93,8 +99,49 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
     {:noreply, assign(socket, :champions, %{status: :data, data: champs})}
   end
 
-  def render_champions(assigns) do
+  def render_display_mode_selector_selector(assigns) do
+    ~H"""
+    <div class="flex">
+      <div phx-click="set-display-mode" phx-value-mode="grid" class="cursor-pointer">
+        <.icon name={grid_icon(assigns.display_mode)} alt="table" />
+      </div>
+      <div phx-click="set-display-mode" phx-value-mode="list" class="cursor-pointer">
+        <.icon name={list_icon(assigns.display_mode)} alt="table" />
+      </div>
+    </div>
+    """
+  end
+
+  defp grid_icon(selected_display_mode) do
+    case selected_display_mode do
+      "grid" -> "hero-squares-2x2-solid"
+      "list" -> "hero-squares-2x2"
+    end
+  end
+
+  def list_icon(selected_display_mode) do
+    case selected_display_mode do
+      "grid" -> "hero-table-cells"
+      "list" -> "hero-table-cells-solid"
+    end
+  end
+
+  def render_champions_list(assigns) do
     case assigns.champions do
+      %{status: :loading} ->
+        ~H"""
+        <.loader />
+        """
+
+      %{status: :data, data: champions} ->
+        ~H"""
+        <.champions_list champions={champions} />
+        """
+    end
+  end
+
+  def render_champions_grid(%{:champions => champions_state} = assigns) do
+    case champions_state do
       %{status: :loading} ->
         ~H"""
         <.loader />

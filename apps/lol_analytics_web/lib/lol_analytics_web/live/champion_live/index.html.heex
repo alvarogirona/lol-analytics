@@ -1,6 +1,11 @@
 <.header>
-  Champions
+  <p class="text-3xl">
+    Champions
+  </p>
+
 </.header>
+
+<div class="h-4" />
 
 <div class="px-2">
   <h1 class="text-l font-semibold">Filters</h1>
@@ -10,9 +15,18 @@
     <.live_component module={ChampionFilters} id="role-filters" selectedrole={@selected_role || "all" } />
   </div>
 
-  <.live_component module={PatchSelector} id="patch-selector" />
+  <div class="flex justify-between items-center">
+    <.live_component module={PatchSelector} id="patch-selector" />
+
+    <.render_display_mode_selector_selector display_mode={@display_mode} />
+  </div>
+
 
   <div class="h-4"></div>
 
-  <.render_champions champions={@champions} />
+  <%= if @display_mode=="grid" do %>
+    <.render_champions_grid champions={@champions} />
+  <% else %>
+    <.render_champions_list id="champions-list" champions={@champions} />
+  <% end %>
 </div>

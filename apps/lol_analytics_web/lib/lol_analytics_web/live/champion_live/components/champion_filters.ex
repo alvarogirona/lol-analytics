@@ -22,7 +22,6 @@ defmodule LolAnalyticsWeb.ChampionLive.Components.ChampionFilters do
   end
 
   attr :selectedrole, :string, required: true
-  attr :roles, :list, default: []
 
   def render(assigns) do
     selected_class =
