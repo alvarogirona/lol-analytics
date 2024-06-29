@@ -16,7 +16,7 @@
   </div>
 
   <div class="flex justify-between items-center">
-    <.live_component module={PatchSelector} id="patch-selector" />
+    <.live_component module={PatchSelector} id="patch-selector" initial_patch={@selected_patch} />
 
     <.render_display_mode_selector_selector display_mode={@display_mode} />
   </div>
@@ -26,7 +26,7 @@
 
   <%= if @display_mode=="grid" do %>
     <.render_champions_grid champions={@champions} />
-  <% else %>
-    <.render_champions_list id="champions-list" champions={@champions} />
-  <% end %>
+    <% else %>
+      <.render_champions_list id="champions-list" champions={@champions} />
+      <% end %>
 </div>

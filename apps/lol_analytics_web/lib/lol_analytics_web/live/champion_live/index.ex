@@ -16,13 +16,14 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
   def mount(params, _session, socket) do
     role = params["role"] || "all"
     patch = params["patch"] || "14.12"
+    display_mode = params["display_mode"] || "grid"
 
     socket =
       socket
       |> assign(:selected_role, role)
       |> assign(:selected_patch, patch)
       |> assign(:champions, %{status: :loading})
-      |> assign(:display_mode, "grid")
+      |> assign(:display_mode, display_mode)
       |> load_champs(role, patch)
 
     {:ok, socket}
@@ -30,18 +31,22 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
 
   def handle_params(params, _uri, socket) do
     role = params["role"] || "all"
-    patch = params["patch"] || "14.12"
+    patch = params["patch"] || "14.10"
+    display_mode = params["display_mode"] || "grid"
 
     {
       :noreply,
       assign(socket, selected_role: role)
       |> assign(selected_patch: patch)
+      |> assign(display_mode: display_mode)
     }
   end
 
   @impl true
   def handle_event("filter", %{"role" => selected_role} = params, socket) do
-    query = Map.merge(params, %{patch: socket.assigns.selected_patch || "14.12"})
+    query =
+      get_query_params(socket)
+      |> Map.merge(%{role: selected_role})
 
     {:reply, %{},
      socket
@@ -51,13 +56,22 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
      |> assign(:selected_role, selected_role)}
   end
 
-  def handle_event("set-display-mode", %{"mode" => mode}, socket) do
-    {:noreply, assign(socket, :display_mode, mode)}
+  def handle_event("set-display-mode", %{"mode" => mode} = params, socket) do
+    query_params =
+      get_query_params(socket)
+      |> Map.merge(%{display_mode: mode})
+
+    {:noreply,
+     assign(socket, :display_mode, mode)
+     |> push_patch(to: ~p"/champions?#{query_params}")}
   end
 
   def handle_info(%{patch: patch}, socket) do
     selected_role = socket.assigns.selected_role
-    query_params = %{role: selected_role, patch: patch}
+
+    query_params =
+      get_query_params(socket)
+      |> Map.merge(%{patch: patch})
 
     socket =
       assign(socket, :champions, %{status: :loading})
@@ -172,5 +186,13 @@ defmodule LoLAnalyticsWeb.ChampionLive.Index do
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Champions")
+  end
+
+  defp get_query_params(socket) do
+    %{
+      patch: socket.assigns.selected_patch,
+      role: socket.assigns.selected_role,
+      display_mode: socket.assigns.display_mode
+    }
   end
 end
