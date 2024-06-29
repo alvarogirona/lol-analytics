@@ -7,8 +7,6 @@ defmodule LolAnalyticsWeb.ChampionLive.Components.ChampionsList do
     detail_url =
       "/champions/#{assigns.champion.id}?team-position=#{assigns.champion.team_position}&patch=#{assigns.champion.patch_number}"
 
-    IO.inspect(detail_url)
-
     ~H"""
     <tr>
       <td>
